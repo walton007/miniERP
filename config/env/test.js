@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports = {
-  db: 'mongodb://' + (process.env.DB_PORT_27017_TCP_ADDR || 'localhost') + '/mean-test',
+  db: 'mongodb://' + (process.env.DB_PORT_27017_TCP_ADDR || 'localhost') + '/miniERP-test',
   http: {
     port: 3001
   },
   app: {
-    name: 'MEAN - A Modern Stack - Test'
+    name: 'miniERP - A Modern Stack - Test'
   },
   facebook: {
     clientID: 'APP_ID',

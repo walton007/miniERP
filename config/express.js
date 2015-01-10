@@ -24,6 +24,7 @@ function onAggregatedSrc(loc,ext,res,next,data){
 }
 
 module.exports = function(app, passport, db) {
+  console.log('express start');
 
   app.set('showStackError', true);
 
@@ -67,12 +68,19 @@ module.exports = function(app, passport, db) {
   var assets = assetmanager.process({
     assets: require('./assets.json'),
     debug: process.env.NODE_ENV !== 'production',
-    webroot: /public\/|packages\//g
+    webroot: /public\/|packages\//g,
+    cachebust: false
   });
+  var myAssets = require('./assets.json');
+  //console.log('myAssets:', myAssets);
+  //console.log('myAssets 2:', myAssets.core['js']['bower_components/build/js/dist.min.js']); //
+
   for(var i in assets.core.css){
     mean.aggregate('css',assets.core.css[i],{group:'header',singlefile:true},mean.config.clean);
   }
   for(var i in assets.core.js){
+    // console.log(assets.core.js[i]);
+    //console.log('mean.config.clean:', mean.config.clean);
     mean.aggregate('js',assets.core.js[i],{group:'footer',singlefile:true,global:true,weight:-1000000+i},mean.config.clean);
   }
 
@@ -85,6 +93,7 @@ module.exports = function(app, passport, db) {
     mean.aggregatedsrc('js', 'header', onAggregatedSrc.bind(null,'header','js',res,null));
     mean.aggregatedsrc('css', 'footer', onAggregatedSrc.bind(null,'footer','css',res,null));
     mean.aggregatedsrc('js', 'footer', onAggregatedSrc.bind(null,'footer','js',res,next));
+    //console.log('res.locals.aggregatedassets:', res.locals.aggregatedassets);
   });
 
   // Express/Mongo session storage
