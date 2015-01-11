@@ -19,34 +19,77 @@ Coal.register(function(app, auth, database) {
   //We are adding a link to the main menu for all authenticated users
   Coal.menus.add({
     title: '存煤管理',
-    link: 'coalmanager',
+    link: 'coalmanage',
     roles: ['worker'],
     menu: 'main',
     name: 'coal',
   });
 
+  //come manage
   Coal.menus.add({
     title: '来煤',
-    link: 'coalmanager',
+    link: 'coalmanage/come',
     roles: ['worker'],
     menu: 'main/coal',
     name: 'come',
   });
 
   Coal.menus.add({
+    title: '历史来煤',
+    link: 'coalmanage.comehistory',
+    roles: ['worker'],
+    menu: 'main/coal/come',
+    name: 'history',
+  });
+
+  Coal.menus.add({
+    title: '来煤录入',
+    link: 'coalmanage.comecreate',
+    roles: ['worker'],
+    menu: 'main/coal/come',
+    name: 'create',
+  });
+
+  Coal.menus.add({
+    title: '来煤审核',
+    link: 'coalmanage.comecheck',
+    roles: ['worker'],
+    menu: 'main/coal/come',
+    name: 'check',
+  });
+
+  //library manage
+  Coal.menus.add({
+    title: '化验',
+    link: 'coalmanage/lab',
+    roles: ['admin'],
+    menu: 'main/coal',
+    name: 'lab'
+  });
+
+  Coal.menus.add({
+    title: '化验记录',
+    link: 'coalmanage/lab/history',
+    roles: ['admin'],
+    menu: 'main/coal/lab',
+    name: 'history'
+  });
+
+  //consume manage
+  Coal.menus.add({
     title: '用煤',
-    link: 'coalmanager',
+    link: 'coalmanage/consume',
     roles: ['worker'],
     menu: 'main/coal',
     name: 'consume',
   });
 
   Coal.menus.add({
-    title: '化验',
-    link: 'coalmanager',
-    roles: ['admin'],
-    menu: 'main/coal',
-    name: 'sub3'
+    title: '用煤记录',
+    link: 'coalmanage/consume/history',
+    roles: ['worker'],
+    menu: 'main/coal/consume',
+    name: 'history',
   });
   
   Coal.aggregateAsset('css', 'coal.css');

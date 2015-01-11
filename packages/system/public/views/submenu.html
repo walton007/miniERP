@@ -1,0 +1,14 @@
+<div class="minierp-submenu">
+  <ul class="list-group">
+    <li class="list-group" data-ng-repeat="item in currentMenu.submenus"  >
+      
+      <h4> {{item.title}} </h4>
+      <ol class="list-group">
+        <li data-ng-repeat="subitem in item.submenus" class="list-group-item">
+          <a mean-token="subitem.link" ui-sref='{{subitem.link}}' ui-srefz='create article'> {{subitem.title}}</a>
+        </li>
+      </ol>
+      
+    </li>
+  </ul>
+</div>

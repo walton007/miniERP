@@ -19,29 +19,38 @@ Overview.register(function(app, auth, database) {
   //We are adding a link to the main menu for all authenticated users
   Overview.menus.add({
     title: '总览',
-    link: 'overviewpage',
-    roles: ['admin'],
+    link: 'overview',
+    roles: ['admin', 'worker'],
     menu: 'main',
     name: 'overview'
   });
 
   Overview.menus.add({
-    title: '查看存煤',
-    link: 'overviewpage',
-    roles: ['admin'],
+    title: '总览',
+    link: 'overview',
+    roles: ['admin', 'worker'],
     menu: 'main/overview',
+    name: 'one'
+  });
+
+  Overview.menus.add({
+    title: '查看存煤',
+    link: 'overview.inventory',
+    roles: ['admin', 'worker'],
+    menu: 'main/overview/one',
     name: 'sub1'
   });
 
   Overview.menus.add({
     title: '报表统计',
-    link: 'overviewpage',
-    roles: ['admin'],
-    menu: 'main/overview',
+    link: 'overview.statistic',
+    roles: ['admin', 'worker'],
+    menu: 'main/overview/one',
     name: 'sub2'
   });
   
   Overview.aggregateAsset('css', 'overview.css');
+  Overview.aggregateAsset('css', 'minierp.css');
 
   /**
     //Uncomment to use. Requires meanio@0.3.7 or above

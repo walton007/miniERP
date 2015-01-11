@@ -1,0 +1,14 @@
+.overview-example h1 {
+  background-color: purple
+}
+
+.minierp-submenu {
+    z-index:1;
+    position: absolute;
+    left: 0;
+    background-color: #799DAB;
+    height: 100%;
+    top: 51px;
+    width: auto;
+
+}
