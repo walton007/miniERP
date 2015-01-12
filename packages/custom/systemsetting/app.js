@@ -22,7 +22,49 @@ Systemsetting.register(function(app, auth, database) {
     link: 'systemsetting',
     roles: ['admin'],
     menu: 'main',
-    name: 'systemsetting'
+    name: 'systemsetting',
+    weight: 4,
+  });
+
+  Systemsetting.menus.add({
+    title: '系统设置',
+    link: 'systemsetting.inventory',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting',
+    name: 'one'
+  });
+
+  Systemsetting.menus.add({
+    title: '煤堆设定',
+    link: 'systemsetting.inventory',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'inventory',
+    isdefault : true,
+  });
+
+  Systemsetting.menus.add({
+    title: '矿源设定',
+    link: 'systemsetting.coals',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'coals'
+  });
+
+  Systemsetting.menus.add({
+    title: '用户设定',
+    link: 'systemsetting.users',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'users'
+  });
+
+  Systemsetting.menus.add({
+    title: '查看日志',
+    link: 'systemsetting.logs',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'logs'
   });
   
   Systemsetting.aggregateAsset('css', 'systemsetting.css');

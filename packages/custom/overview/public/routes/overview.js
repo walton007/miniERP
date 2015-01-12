@@ -7,11 +7,11 @@ angular.module('mean.overview').config(function(stateHelperProvider) {
 		templateUrl: 'overview/views/index.html',
 		children: [{
 			name: 'inventory',
-			url: '/overview/inventory',
+			url: '/inventory',
 			templateUrl: 'overview/views/inventory.html',
 		}, {
 			name: 'statistic',
-			url: '/overview/statistic',
+			url: '/statistic',
 			templateUrl: 'overview/views/statistic.html',
 		}]
 	});

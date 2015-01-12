@@ -23,15 +23,17 @@ Coal.register(function(app, auth, database) {
     roles: ['worker'],
     menu: 'main',
     name: 'coal',
+    weight: 2,
   });
 
   //come manage
   Coal.menus.add({
     title: '来煤',
-    link: 'coalmanage/come',
     roles: ['worker'],
     menu: 'main/coal',
     name: 'come',
+    link: 'coalmanage.comehistory',
+    isdefault: true,
   });
 
   Coal.menus.add({
@@ -40,6 +42,8 @@ Coal.register(function(app, auth, database) {
     roles: ['worker'],
     menu: 'main/coal/come',
     name: 'history',
+    weight: 1,
+
   });
 
   Coal.menus.add({
@@ -48,6 +52,7 @@ Coal.register(function(app, auth, database) {
     roles: ['worker'],
     menu: 'main/coal/come',
     name: 'create',
+    weight: 2,
   });
 
   Coal.menus.add({
@@ -56,12 +61,13 @@ Coal.register(function(app, auth, database) {
     roles: ['worker'],
     menu: 'main/coal/come',
     name: 'check',
+    weight: 3,
   });
 
   //library manage
   Coal.menus.add({
     title: '化验',
-    link: 'coalmanage/lab',
+    link: 'coalmanage.labrecords',
     roles: ['admin'],
     menu: 'main/coal',
     name: 'lab'
@@ -69,16 +75,32 @@ Coal.register(function(app, auth, database) {
 
   Coal.menus.add({
     title: '化验记录',
-    link: 'coalmanage/lab/history',
+    link: 'coalmanage.labrecords',
     roles: ['admin'],
     menu: 'main/coal/lab',
-    name: 'history'
+    name: 'records'
+  });
+
+  Coal.menus.add({
+    title: '化验录入',
+    link: 'coalmanage.labcreaterecord',
+    roles: ['admin'],
+    menu: 'main/coal/lab',
+    name: 'createrecord'
+  });
+
+  Coal.menus.add({
+    title: '化验审核',
+    link: 'coalmanage.labcheck',
+    roles: ['admin'],
+    menu: 'main/coal/lab',
+    name: 'check'
   });
 
   //consume manage
   Coal.menus.add({
     title: '用煤',
-    link: 'coalmanage/consume',
+    link: 'coalmanage.consume',
     roles: ['worker'],
     menu: 'main/coal',
     name: 'consume',
@@ -86,10 +108,26 @@ Coal.register(function(app, auth, database) {
 
   Coal.menus.add({
     title: '用煤记录',
-    link: 'coalmanage/consume/history',
+    link: 'coalmanage.consumehistory',
     roles: ['worker'],
     menu: 'main/coal/consume',
     name: 'history',
+  });
+
+  Coal.menus.add({
+    title: '用煤录入',
+    link: 'coalmanage.consumecreaterecord',
+    roles: ['worker'],
+    menu: 'main/coal/consume',
+    name: 'createrecord',
+  });
+
+  Coal.menus.add({
+    title: '用煤审核',
+    link: 'coalmanage.consumecheck',
+    roles: ['worker'],
+    menu: 'main/coal/consume',
+    name: 'check',
   });
   
   Coal.aggregateAsset('css', 'coal.css');

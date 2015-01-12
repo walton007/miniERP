@@ -14,9 +14,9 @@ angular.module('mean.system', ['ui.router', 'mean-factory-interceptor'])
         $rootScope.state = 'firstPage';
       }
 
-      if (toPath) {
-        $rootScope.menuname = toPath;
-        console.log('angular.module stateChangeStart toPath:', toPath);
+      if (toState.name) {
+        $rootScope.menuname = toState.name;
+        console.log('angular.module stateChangeStart toState.name:', toState.name);
       }
 
     });

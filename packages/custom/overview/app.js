@@ -22,15 +22,18 @@ Overview.register(function(app, auth, database) {
     link: 'overview',
     roles: ['admin', 'worker'],
     menu: 'main',
-    name: 'overview'
+    name: 'overview',
+    weight: 1,
+    isdefault : true,
   });
 
   Overview.menus.add({
     title: '总览',
-    link: 'overview',
+    link: 'overview.inventory',
     roles: ['admin', 'worker'],
     menu: 'main/overview',
-    name: 'one'
+    name: 'one',
+    isdefault : true,
   });
 
   Overview.menus.add({
@@ -38,7 +41,8 @@ Overview.register(function(app, auth, database) {
     link: 'overview.inventory',
     roles: ['admin', 'worker'],
     menu: 'main/overview/one',
-    name: 'sub1'
+    name: 'sub1',
+    isdefault : true,
   });
 
   Overview.menus.add({
