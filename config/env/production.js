@@ -26,8 +26,11 @@ module.exports = {
     }
     */
   },
+  http: {
+    port: process.env.PORT || 3002
+  },
   app: {
-    name: 'miniERP - A Modern Stack - Production'
+    name: 'miniERP -  Production'
   },
   facebook: {
     clientID: 'APP_ID',

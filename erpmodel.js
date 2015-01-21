@@ -10,17 +10,59 @@ var mongoose = require('mongoose'),
  // crypto = require('crypto'),
  // _ = require('lodash'),
   Q = require('q');
+  extend = require('mongoose-schema-extend');
 
  
-mongoose.connect('mongodb://localhost/erptest');
+var db = mongoose.connect('mongodb://localhost/erptest2');
 console.log('hello');
 
+var autoinc = require('mongoose-id-autoinc2');
+autoinc.init(db);
 
 //Need administrator to config these information: InventoryUnit, InventorySchema, QualitySchema, CoalMine
-
-var QualitySchema = new Schema({
-  contents: [String],
+var BaseSchema = new Schema({
+  creator: String,
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  modified: {
+    type: Date,
+    default: Date.now
+  },
 });
+
+var ChemicalAttrSchema = new Schema({
+  Mar: Number,
+  Mad: Number,
+  Aad: Number,
+  Ad: Number,
+  Vad: Number,
+  Vdaf: Number,
+  FCad: Number,
+  St_ad: Number,
+  Qb_ad: Number,
+  Qgr_d: Number,
+  Qnet_v_ar: Number,
+  Qnet_v_ar_cal: Number,
+
+  power: {
+    type: Number,
+    required: true
+  },
+  nitrogen: {
+    type: Number,
+    required: true
+  },
+});
+
+
+
+var QualitySchema = BaseSchema.extend({
+  name: String,
+  comment: String,
+});
+
 var Quality = mongoose.model('Quality', QualitySchema);
 
 /**
@@ -91,246 +133,159 @@ QualitySchema.statics = {
   }
 };
 
-
-var InventoryUnitSchema = new Schema({
+var MineralSchema = BaseSchema.extend({
   name: {
     type: String,
     required: true,
     trim: true,
     unique: true,
   },
-  quality: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  weight: {
-    type: Number,
-    required: true
-  },
-
-  power: {
-    type: Number,
-    required: true
-  },
-  nitrogen: {
-    type: Number,
-    required: true
-  },
-
-});
-
-var ManualMofifyRecordSchema = new Schema({
-  reason: {
-    type: String,
-    trim: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  user: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  lastsnapshot: {
-    
-  }
-});
-
-var InventorySchema = new Schema({
-
-  inventory: [InventoryUnitSchema],
-
-  created: {
-    type: Date,
-    default: Date.now
-  },
-
-  datasource: {
-    type: String,
-    required: true,
-    default: 'manual',
-    enum: ['manual', 'system'],
-  },
-   
-});
-
-var CoalMineSchema = new Schema({
-  name: {
+  qualityName: {
     type: String,
     required: true,
     trim: true,
-    unique: true,
+    //validate: [Quality.validate, 'invalid quality value'],
   },
-  quality: {
-    type: String,
-    required: true,
-    trim: true,
-    validate: [Quality.validate, 'invalid quality value'],
-  },
-
-  created: {
-    type: Date,
-    default: Date.now
-  },
-
-  modified: {
-    type: Date,
-    default: Date.now
-  },
-});
-
-CoalMineSchema.pre('save', function(next) {
-  if (!this.isNew) {
-    console.log('update modified date');
-    this.modified = Date.now;
-  }
-
-  next();
-});
-
-
-//Got from SystemA
-var CoalBuyTransactionSchema = new Schema({
-  //Following data is got from SystemA
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  coalminename: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  weight: {
-    type: Number,
-    required: true
-  },
-
-  //Mar Mad Aad Ad  Vad Vdaf  FCad  St,ad Qb,ad Qgr,d Qnet,v,ar Qnet,v,ar
-  Mar: Number,
-  Mad: Number,
-  Aad: Number,
-  Ad: Number,
-  Vad: Number,
-  Vdaf: Number,
-  FCad: Number,
-  St_ad: Number,
-  Qb_ad: Number,
-  Qgr_d: Number,
-  Qnet_v_ar: Number,
-  Qnet_v_ar_cal: Number,
-
-  //From now on, following data is caculated by server
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  coalmine: {
+  qualityId: {
     type: Schema.ObjectId,
-    ref: 'CoalMine'
+    ref: 'Quality'
   },
+  comment: String,
 });
 
-// CoalBuyTransactionSchema.pre('save', function(next) {
+mongoose.model('Mineral', MineralSchema);
+
+// MineralSchema.pre('save', function(next) {
 //   if (!this.isNew) {
 //     console.log('update modified date');
 //     this.modified = Date.now;
-//   };
+//   }
 
 //   next();
 // });
 
-var CoalProductionPlanSchema = new Schema({
-
-  useplan: [InventoryUnitSchema],
-  date: {
-    type: Date,
-    default: Date.now
-  },
-
-  created: {
-    type: Date,
-    default: Date.now
-  },
-
-  modified: {
-    type: Date,
-    default: Date.now
-  },
-
-  manualhistory: [ManualMofifyRecordSchema],
+var WarehouseSchema = BaseSchema.extend({
+  name: String,
+  comment: String,
 });
 
-// var CoalConsuptionDataSISSchema = new Schema({
-//   date: {
-//     type: Date,
-//     default: Date.now
-//   },
-//   accuweight: {
-//     type: Number,
-//     required: true
-//   },
-// });
+mongoose.model('Warehouse', WarehouseSchema);
 
-var MineCostSchema = new Schema({
+var BinlocationSchema = BaseSchema.extend({
   name: {
     type: String,
     required: true,
     trim: true,
     unique: true,
   },
-  quality: {
+  
+  weight: {
+    type: Number,
+    required: true
+  },
+ 
+  chemicalAttrs: ChemicalAttrSchema,
+  warehouseName: String,
+  warehouseId: {
+    type: Schema.ObjectId,
+    ref: 'Warehouse'
+  },
+
+  parentBin: {
+    type: Schema.ObjectId,
+    ref: 'Binlocation'
+  },
+
+  active: {
+    type: Boolean,
+    default: true
+  },
+
+});
+mongoose.model('Binlocation', BinlocationSchema);
+ 
+var GoodReceiptSchema = BaseSchema.extend({
+  receiveDate: {
+    type: Date,
+  },
+  mineralName: {
     type: String,
     required: true,
     trim: true
   },
+
+  mineralId: {
+    type: Schema.ObjectId,
+    ref: 'Mineral'
+  },
+
+  binName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+
+  binId: {
+    type: Schema.ObjectId,
+    ref: 'Binlocation'
+  },
+
   weight: {
     type: Number,
     required: true
   },
 
-  workschedule: {
-    type: String,
-    required: true,
-    trim: true,
-    enum: ['morning', 'noon', 'earlynight', 'latenight'],
+  receiptChecked: {
+    type: Boolean,
+    required: true
   },
 
-});
+  origchemicalAttrs: ChemicalAttrSchema,
 
-var CoalDailyConsumptionSchema = new Schema({
-  //Following data is got from SystemB
-  date: {
-    type: Date,
-    default: Date.now
+  chemicalAttrs: ChemicalAttrSchema,
+  chemicalChecked: {
+    type: Boolean,
+    required: true
   },
   
-  //sisdata: [CoalConsuptionDataSISSchema],
-
-  cost: [MineCostSchema],
-  manualhistory: [ManualMofifyRecordSchema],
-
-  created: {
-    type: Date,
-    default: Date.now
-  },
-
-  modified: {
-    type: Date,
-    default: Date.now
-  },
+}, {
+  _id: false
 });
 
+autoinc.plugin(GoodReceiptSchema, {model: 'GoodReceipt', field: '_id'});
+var GoodReceipt = mongoose.model('GoodReceipt', GoodReceiptSchema);
+ 
 
-//var CoalMine = mongoose.model('CoalMine', CoalMineSchema);
-mongoose.model('Inventory', InventorySchema);
-var CoalBuyTransaction = mongoose.model('CoalBuyTransaction', CoalBuyTransactionSchema);
-mongoose.model('CoalProductionPlan', CoalProductionPlanSchema);
-mongoose.model('CoalDailyConsumption', CoalDailyConsumptionSchema);
+var GoodIssueSchema = BaseSchema.extend({
+  issueDate: {
+    type: Date,
+  },
+
+  binName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+
+  binId: {
+    type: Schema.ObjectId,
+    ref: 'Binlocation'
+  },
+
+  weight: {
+    type: Number,
+    required: true
+  },
+
+  issueChecked: {
+    type: Boolean,
+    required: true
+  },
+  
+});
+ 
+
+mongoose.model('GoodIssue', GoodIssueSchema);
  
 // Quality.addQuality('优秀3').then(function(contents) {
 //   console.log('contents: ', contents);
@@ -348,27 +303,23 @@ mongoose.model('CoalDailyConsumption', CoalDailyConsumptionSchema);
 
 // });
 
-var tran = new CoalBuyTransaction({
-  coalminename: '晓兵',
-  weight: 34.4
-});
-tran.save();
+// var tran = new CoalBuyTransaction({
+//   coalminename: '晓兵',
+//   weight: 34.4
+// });
+// tran.save();
 
 
 
 
 //mongoose.disconnect();
 
-// InventoryUnit, InventorySchema, QualitySchema, CoalMine //Initial configuration
-
-// CoalDailyConsumptionSchema  //Got from sis 
-// CoalProductionPlanSchema    //Got from operator
-// CoalBuyTransactionSchema    //Got from SystemA
-
-// Question:
-// 1. how to calculate coal consumpltion
-// 2. which table can be modified
-
+// var Quality = mongoose.model('Quality', QualitySchema);
+// mongoose.model('Mineral', MineralSchema);
+// mongoose.model('Warehouse', WarehouseSchema);
+// mongoose.model('Binlocation', BinlocationSchema);
+// var GoodReceipt = mongoose.model('GoodReceipt', GoodReceiptSchema);
+// mongoose.model('GoodIssue', GoodIssueSchema);
 
 // 1. 入煤数据修改要记录修改历史和原因  生产计划现在只记录修改历史
 // 2. 煤耗记录修改历史和原因，工人只能输入一次，jt可以修改多次
@@ -376,4 +327,19 @@ tran.save();
 // 4. 关于煤管班，应该是有个类似【审核】的功能流程
 //     煤管班可以输入，景涛再确认
 //     确认前的数据只记录，不计算
-//     另外就是，在景涛确认数据时，有个时间先后顺序，如果有多个记录等待确认，比如昨天来了一批煤，今天来了一批煤，只确认今天的来煤的话，给出提示应先确认昨天的来煤      
+//     另外就是，在景涛确认数据时，有个时间先后顺序，如果有多个记录等待确认，比如昨天来了一批煤，今天来了一批煤，只确认今天的来煤的话，给出提示应先确认昨天的来煤   
+
+//CoalBuyTransactionSchema: record modify    
+
+
+//来煤选择流程
+//1. 先输入来煤数量，化验员化验审核通过，jt才能能审核通过，才能参与库存计算
+//2. 系统初始化矿源时候输入各个矿源的煤直信息，当煤管工输入来煤数量，即使化验员没有输入媒质信息， jt也能审核通过， 并且参与库存媒质计算。计算方法，利用
+//   初始估算的煤直信息。化验结果审核通过后，再次修正计算
+
+//库存表每次实时更新（来煤或者用煤审核通过），同时需要记录jt所有的修改
+//查看日志: InventoryUnit修改的前后值
+
+//所有的修改都需要记录操作员
+
+//xulong更近报表统计

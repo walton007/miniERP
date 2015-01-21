@@ -93,10 +93,13 @@ module.exports = function(grunt) {
           'server.js',
           function() {
             require('meanio/lib/util').preload(__dirname + '/packages/**/server', 'model');
+            require('meanio/lib/util').preload(__dirname + '/packages/custom/**/server', 'model');
           }
         ]
       },
-      src: ['packages/**/server/tests/**/*.js']
+      // src: ['packages/**/server/tests/**/*.js']
+      // src: ['packages/users/**/server/tests/**/*.js']
+      src: ['packages/custom/**/server/tests/**/*.js']
     },
     env: {
       test: {
@@ -130,7 +133,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['hook']);
 
   //Test task.
-  grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+  // grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+  grunt.registerTask('test', ['env:test', 'mochaTest']);
 
   // For Heroku users only.
   // Docs: https://github.com/linnovate/mean/wiki/Deploying-on-Heroku

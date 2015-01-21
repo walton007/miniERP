@@ -100,7 +100,7 @@ Coal.register(function(app, auth, database) {
   //consume manage
   Coal.menus.add({
     title: '用煤',
-    link: 'coalmanage.consume',
+    link: 'coalmanage.consumehistory',
     roles: ['worker'],
     menu: 'main/coal',
     name: 'consume',
