@@ -8,11 +8,9 @@ var mongoose = require('mongoose'),
  // crypto = require('crypto'),
  // _ = require('lodash'),
   Q = require('q'),
+  _ = require('lodash'),
   extend = require('mongoose-schema-extend');
 
- 
-// var db = mongoose.connect('mongodb://localhost/erptest2');
-console.log('hello');
 
 // var autoinc = require('mongoose-id-autoinc');
 // autoinc.init(db);
@@ -33,6 +31,11 @@ var BaseSchema = new Schema({
   modified: {
     type: Date,
     default: Date.now
+  },
+  
+  deleteFlag: {
+    type: Boolean,
+    default: false
   },
 });
 
@@ -68,7 +71,6 @@ var QualitySchema = BaseSchema.extend({
 });
 
 var Quality = mongoose.model('Quality', QualitySchema);
-console.log('In model define Quality:', Quality);
 
 /**
  * QualitySchema Statics
@@ -181,7 +183,6 @@ var BinlocationSchema = BaseSchema.extend({
     type: String,
     required: true,
     trim: true,
-    unique: true,
   },
   
   weight: {
@@ -196,18 +197,57 @@ var BinlocationSchema = BaseSchema.extend({
     ref: 'Warehouse'
   },
 
-  parentBin: {
+  prevBin: {
     type: Schema.ObjectId,
     ref: 'Binlocation'
   },
 
-  active: {
-    type: Boolean,
-    default: true
+  status: {
+    type: String,
+    required: true,
+    default: 'new',
+    enum: ['new', 'historyPre', 'historyPost'],
   },
 
 });
-mongoose.model('Binlocation', BinlocationSchema);
+ 
+BinlocationSchema.static('updateBinManually', 
+  function(oldBin, newVal) {
+    console.log('oldbin, newVal');
+
+    //Create a new record to mark as current binlocation inventory
+    _.extend(newVal, {
+      'name': oldBin.name,
+      'warehouseName': oldBin.warehouseName,
+      'warehouse': oldBin.warehouse,
+    });
+    var newBin = new Binlocation(newVal);
+
+    //Change oldBin to be history record
+    oldBin.status = 'historyPre';
+
+    //Create a new record, and make this ref the old record
+    var historyPostBin = new Binlocation(newVal);
+    historyPostBin.prevBin = oldBin;
+    historyPostBin.status = 'historyPost'
+
+    var deferred = Q.defer();
+
+
+    Q.all([Q.ninvoke(newBin, 'save'), Q.ninvoke(oldBin, 'save'), Q.ninvoke(historyPostBin, 'save')])
+      .then(function (results) {
+        // console.log('results:', results);
+        deferred.resolve(newBin);
+       
+      }, function(err) {
+        console.log('err:',err);
+        deferred.reject('failed to updateBinManually');
+      });
+    return deferred.promise;
+  }
+);
+
+var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
  
 var GoodReceiptSchema = BaseSchema.extend({
   receiveDate: {
@@ -245,9 +285,9 @@ var GoodReceiptSchema = BaseSchema.extend({
     required: true
   },
 
-  origchemicalAttrs: ChemicalAttrSchemaDef,
+  inputChemicalAttrs: ChemicalAttrSchemaDef,
 
-  chemicalAttrs: ChemicalAttrSchemaDef,
+  actualChemicalAttrs: ChemicalAttrSchemaDef,
   chemicalChecked: {
     type: Boolean,
     required: true
@@ -282,11 +322,15 @@ var GoodIssueSchema = BaseSchema.extend({
     required: true
   },
 
-  issueChecked: {
-    type: Boolean,
-    required: true
+  oldWeight: Number,
+
+  status: {
+    type: String,
+    required: true,
+    default: 'new',
+    enum: ['new', 'revised', 'trash','checked'],
   },
-  
+   
 });
  
 

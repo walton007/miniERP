@@ -9,9 +9,7 @@ var expect = require('expect.js'),
 	mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Quality = mongoose.model('Quality');
-
-console.log('test coals begin Quality');
-// console.log('test coals begin User:', User);
+ 
 /**
  * Globals
  */
@@ -23,7 +21,7 @@ var quality;
  */
 describe('<Unit Test>', function() {
   describe('Model Quality:', function() {
-    beforeEach(function(done) {
+    before(function(done) {
       user = new User({
         name: 'Full name',
         email: 'test@test.com',
@@ -33,8 +31,6 @@ describe('<Unit Test>', function() {
 
       user.save(function() {
         quality = new Quality({
-          title: 'Article Title',
-          content: 'Article Content',
           creator: user,
           creatorName: user.name,
           name: '陕煤',
@@ -59,7 +55,6 @@ describe('<Unit Test>', function() {
           done();
         });
       });
-
     
 
       it('should be able to show an error when try to save without name', function(done) {
@@ -85,7 +80,7 @@ describe('<Unit Test>', function() {
 
     });
 
-    afterEach(function(done) {
+    after(function(done) {
       quality.remove(function () {
         user.remove(done);
       });
