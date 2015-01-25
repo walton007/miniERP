@@ -22,42 +22,41 @@ var mineral;
 /**
  * Test Suites
  */
-describe('<Unit Test>', function() {
-  describe('Model Mineral:', function() {
-    before(function(done) {
-      user = new User({
-        name: 'Full name',
-        email: 'test@test.com',
-        username: 'user',
-        password: 'password'
-      });
-
-      user.save(function() {
-        quality = new Quality({
-          creator: user,
-          creatorName: user.name,
-          name: '陕煤',
-          comment: '品质好'
-        });
-
-        quality.save(function() {
-          mineral = new Mineral({
-            creator: user,
-            creatorName: user.name,
-            name: '张家煤矿',
-            comment: '品质好',
-            quality: quality,
-            qualityName: quality.name,
-          });
-          done();
-        })
-
-        
-      });
-
+describe('<Mineral Test>', function() {
+   
+  before(function(done) {
+    user = new User({
+      name: 'Full name',
+      email: 'test@test.com',
+      username: 'user',
+      password: 'password'
     });
 
-    describe('Method Save', function() {
+    user.save(function() {
+      quality = new Quality({
+        creator: user,
+        creatorName: user.name,
+        name: '陕煤',
+        comment: '品质好'
+      });
+
+      quality.save(function() {
+        mineral = new Mineral({
+          creator: user,
+          creatorName: user.name,
+          name: '张家煤矿',
+          comment: '品质好',
+          quality: quality,
+          qualityName: quality.name,
+        });
+        done();
+      })
+
+      
+    });
+ 
+
+    describe('Save Actions', function() {
       it('should be able to create without problems', function(done) {
         return mineral.save(function(err) {
            // console.log('it1:', err);

@@ -80,6 +80,19 @@ describe('<Unit Test>', function() {
 
     });
 
+    describe('Method Delete', function() {
+      it('should be able to mark delete without problems', function(done) {
+        quality.markDelete().then(function(savedObj) {
+          expect(savedObj.deleteFlag).to.be(true);
+        }, function(errValue){
+          expect(errValue).to.be(null);
+
+        }).finally(done);
+        return;
+      });
+
+    });
+
     after(function(done) {
       quality.remove(function () {
         user.remove(done);

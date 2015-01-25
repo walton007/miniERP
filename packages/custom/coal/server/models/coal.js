@@ -38,6 +38,33 @@ var BaseSchema = new Schema({
   },
 });
 
+ 
+BaseSchema.pre('save', function(next) {
+  if (!this.isNew) {
+    // console.log('update modified date');
+    this.modified = Date.now;
+  } else {
+    // console.log('add new object');
+    this.created = Date.now;
+  }
+
+  next();
+});
+
+BaseSchema.method('markDelete', function() {
+  var deferred = Q.defer();
+  console.log('markDelete');
+  this.deleteFlag = true;
+  this.save(function(err, savedObj, numberAffected) {
+    if (err) {
+      deferred.reject(err);
+    } else {
+      deferred.resolve(savedObj);
+    }
+  });
+  return deferred.promise;
+})
+
 var ChemicalAttrSchemaDef = {  
   Mar: Number,
   Mad: Number,
@@ -137,6 +164,7 @@ var Quality = mongoose.model('Quality', QualitySchema);
 //   }
 // };
 
+
 var MineralSchema = BaseSchema.extend({
   name: {
     type: String,
@@ -159,14 +187,7 @@ var MineralSchema = BaseSchema.extend({
 
 mongoose.model('Mineral', MineralSchema);
 
-// MineralSchema.pre('save', function(next) {
-//   if (!this.isNew) {
-//     console.log('update modified date');
-//     this.modified = Date.now;
-//   }
 
-//   next();
-// });
 
 var WarehouseSchema = BaseSchema.extend({
   name: String,
