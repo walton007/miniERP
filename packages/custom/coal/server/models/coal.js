@@ -8,9 +8,9 @@ var mongoose = require('mongoose'),
  // crypto = require('crypto'),
  // _ = require('lodash'),
   Q = require('q'),
-  _ = require('lodash'),
-  extend = require('mongoose-schema-extend');
+  _ = require('lodash');
 
+require('mongoose-schema-extend');
 
 var autoinc = require('./autoinc');
 
@@ -63,7 +63,7 @@ BaseSchema.method('markDelete', function() {
     }
   });
   return deferred.promise;
-})
+});
 
 var ChemicalAttrSchemaDef = {  
   Mar: Number,
@@ -94,7 +94,7 @@ var QualitySchema = BaseSchema.extend({
   comment: String,
 });
 
-var Quality = mongoose.model('Quality', QualitySchema);
+mongoose.model('Quality', QualitySchema);
 
 /**
  * QualitySchema Statics
@@ -232,6 +232,7 @@ var BinlocationSchema = BaseSchema.extend({
 BinlocationSchema.static('updateBinManually', 
   function(oldBin, newVal) {
     console.log('oldbin, newVal');
+    var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
 
     //Create a new record to mark as current binlocation inventory
     _.extend(newVal, {
@@ -247,7 +248,7 @@ BinlocationSchema.static('updateBinManually',
     //Create a new record, and make this ref the old record
     var historyPostBin = new Binlocation(newVal);
     historyPostBin.prevBin = oldBin;
-    historyPostBin.status = 'historyPost'
+    historyPostBin.status = 'historyPost';
 
     var deferred = Q.defer();
 
@@ -265,7 +266,7 @@ BinlocationSchema.static('updateBinManually',
   }
 );
 
-var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
+mongoose.model('Binlocation', BinlocationSchema); 
  
 var GoodReceiptSchema = BaseSchema.extend({
   receiveDate: {
@@ -315,7 +316,7 @@ var GoodReceiptSchema = BaseSchema.extend({
 });
 
 autoinc.plugin(GoodReceiptSchema, {model: 'GoodReceipt', field: 'sequence', start: 1});
-var GoodReceipt = mongoose.model('GoodReceipt', GoodReceiptSchema);
+mongoose.model('GoodReceipt', GoodReceiptSchema);
  
 
 var GoodIssueSchema = BaseSchema.extend({

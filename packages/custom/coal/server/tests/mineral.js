@@ -50,7 +50,7 @@ describe('<Mineral Test>', function() {
           qualityName: quality.name,
         });
         done();
-      })
+      });
 
       
     });
@@ -78,7 +78,7 @@ describe('<Mineral Test>', function() {
           quality.remove(function () {
           user.remove(done);
         });
-        })
+      });
     });
   });
 });

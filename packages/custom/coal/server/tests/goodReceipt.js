@@ -96,7 +96,7 @@ describe('<Unit Test>', function() {
           // expect(obj.weight).to.equal(goodReceiptDict.seq);
           expect(obj.sequence).to.equal(1);
           done();
-        })
+        });
         return ;
       });
 

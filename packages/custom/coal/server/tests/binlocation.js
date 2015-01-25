@@ -11,8 +11,7 @@ var expect = require('expect.js'),
 
   Warehouse = mongoose.model('Warehouse'),
   Binlocation = mongoose.model('Binlocation');
-
-var  Q = require('q');
+ 
  
 /**
  * Globals
@@ -74,7 +73,7 @@ describe('<Unit Test>', function() {
             parentBin: null
           });
           done();
-        })
+        });
 
         
       });
@@ -99,7 +98,7 @@ describe('<Unit Test>', function() {
           expect(qbin.warehouseName).to.equal(warehouse.name);
           expect(qbin.chemicalAttrs.Mad).to.equal(gChemicalAttrs.Mad);
           done();
-        })
+        });
         return ;
       });
 
@@ -111,7 +110,7 @@ describe('<Unit Test>', function() {
           expect(qbin.warehouse.name).to.equal(warehouse.name);
           // expect(qbin.creator).to.equal(warehouse.name);
           done();
-        })
+        });
         return ;
       });
 
@@ -171,7 +170,7 @@ describe('<Unit Test>', function() {
           warehouse.remove(function () {
             user.remove(done);
           });
-        })
+        });
     });
   });
 });
