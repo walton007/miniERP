@@ -24,7 +24,7 @@ var mineral;
  */
 describe('<Unit Test>', function() {
   describe('Model Mineral:', function() {
-    beforeEach(function(done) {
+    before(function(done) {
       user = new User({
         name: 'Full name',
         email: 'test@test.com',
@@ -74,8 +74,8 @@ describe('<Unit Test>', function() {
 
     });
 
-    afterEach(function(done) {
-      mineral.remove(function(){
+    after(function(done) {
+      Mineral.remove({}, function(){
           quality.remove(function () {
           user.remove(done);
         });

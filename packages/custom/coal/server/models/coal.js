@@ -12,8 +12,7 @@ var mongoose = require('mongoose'),
   extend = require('mongoose-schema-extend');
 
 
-// var autoinc = require('mongoose-id-autoinc');
-// autoinc.init(db);
+var autoinc = require('./autoinc');
 
 //Need administrator to config these information: InventoryUnit, InventorySchema, QualitySchema, CoalMine
 var BaseSchema = new Schema({
@@ -39,7 +38,7 @@ var BaseSchema = new Schema({
   },
 });
 
-var ChemicalAttrSchemaDef = { //new Schema({
+var ChemicalAttrSchemaDef = {  
   Mar: Number,
   Mad: Number,
   Aad: Number,
@@ -61,9 +60,7 @@ var ChemicalAttrSchemaDef = { //new Schema({
     type: Number,
     required: true
   },
-}; //);
-
-
+}; 
 
 var QualitySchema = BaseSchema.extend({
   name: String,
@@ -252,6 +249,7 @@ var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
 var GoodReceiptSchema = BaseSchema.extend({
   receiveDate: {
     type: Date,
+    required: true,
   },
   mineralName: {
     type: String,
@@ -293,11 +291,9 @@ var GoodReceiptSchema = BaseSchema.extend({
     required: true
   },
   
-}, {
-  _id: false
 });
 
-// autoinc.plugin(GoodReceiptSchema, {model: 'GoodReceipt', field: '_id'});
+autoinc.plugin(GoodReceiptSchema, {model: 'GoodReceipt', field: 'sequence', start: 1});
 var GoodReceipt = mongoose.model('GoodReceipt', GoodReceiptSchema);
  
 
