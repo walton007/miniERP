@@ -24,6 +24,7 @@ Systemsetting.register(function(app, auth, database) {
     menu: 'main',
     name: 'systemsetting',
     weight: 4,
+    isdefault : true,
   });
 
   Systemsetting.menus.add({
@@ -32,7 +33,7 @@ Systemsetting.register(function(app, auth, database) {
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting',
     name: 'one',
-    isdefault : true,
+    
   });
 
   Systemsetting.menus.add({
@@ -41,6 +42,7 @@ Systemsetting.register(function(app, auth, database) {
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
     name: 'inventory',
+    isdefault : true,
   });
 
   Systemsetting.menus.add({

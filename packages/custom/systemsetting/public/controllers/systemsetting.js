@@ -6,5 +6,12 @@ angular.module('mean.systemsetting').controller('SystemsettingController', ['$sc
     $scope.package = {
       name: 'systemsetting'
     };
+ 
+	    $scope.myData = [{name: 'Moroni', age: 50},
+	    	{name: 'Tiancum', age: 43},
+	    	{name: 'walton', age: 43}];
+	    $scope.gridOptions = { data: 'myData' };
   }
 ]);
+
+ 

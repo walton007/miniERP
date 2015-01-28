@@ -24,7 +24,7 @@ Overview.register(function(app, auth, database) {
     menu: 'main',
     name: 'overview',
     weight: 1,
-    isdefault : true,
+    isdefault : false,
   });
 
   Overview.menus.add({

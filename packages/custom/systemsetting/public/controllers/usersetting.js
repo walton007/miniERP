@@ -15,7 +15,7 @@ angular.module('mean.systemsetting').controller('UserSettingController', ['$scop
             inTable: true
         }, {
             title: 'Username',
-            schemaKey: 'username',
+            schemaKey: 'Username',
             type: 'text',
             inTable: true
         }, {

@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('mean.systemsetting', ['mean.system', 'ui.router.stateHelper']);
+angular.module('mean.systemsetting', ['ngGrid', 'mean.system', 'ui.router.stateHelper']);
