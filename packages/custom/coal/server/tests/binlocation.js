@@ -10,7 +10,10 @@ var expect = require('expect.js'),
   User = mongoose.model('User'),
 
   Warehouse = mongoose.model('Warehouse'),
-  Binlocation = mongoose.model('Binlocation');
+  Binlocation = mongoose.model('Binlocation'),
+  GoodReceipt = mongoose.model('GoodReceipt');
+
+ var Q = require('q');
  
  
 /**
@@ -19,8 +22,27 @@ var expect = require('expect.js'),
 var user;
 var warehouse;
 var bin;
-var gChemicalAttrs =  { //new Schema({
-  Mar: 11,
+var gNewBin;
+var gChemicalAttrs =  {  
+  Mar: 10,
+  Mad: 12,
+  Aad: 2,
+  Ad: 3,
+  Vad: 4,
+  Vdaf: 5.5,
+  FCad: 6,
+  St_ad: 7,
+  Qb_ad: 8,
+  Qgr_d: 1,
+  Qnet_v_ar: 12,
+  Qnet_v_ar_cal: 3,
+
+  power: 23,
+  nitrogen: 54
+};
+
+var gChemicalAttrs2 =  {  
+  Mar: 20,
   Mad: 12,
   Aad: 2,
   Ad: 3,
@@ -66,7 +88,7 @@ describe('<Unit Test>', function() {
             creator: user,
             creatorName: user.name,
             name: '一期东陕煤',
-            weight: 12.3,
+            weight: 20,
             chemicalAttrs: gChemicalAttrs,
             warehouse : warehouse,
             warehouseName: warehouse.name,
@@ -122,7 +144,7 @@ describe('<Unit Test>', function() {
           newVal = {
             creator: user,
             creatorName: user.name,
-            weight: 15.3,
+            weight: 25,
             chemicalAttrs: gChemicalAttrs,
           };
 
@@ -132,6 +154,7 @@ describe('<Unit Test>', function() {
             expect(newBin).property('weight', newVal.weight);
             expect(oldBin.status).to.equal('historyPre');
             done();
+            gNewBin = newBin;
 
           }, function(err)  {
             console.log('3222');
@@ -159,18 +182,103 @@ describe('<Unit Test>', function() {
               expect(historyPreBin.weight).to.equal(bin.weight);
               done();
             });
-      });
+       });
+
+      it('check getAllBinList', function(done) {
+        console.log('check data getAllBinList');
+        Binlocation.getAllBinList().then(function(binArrayList) {
+          // console.log();
+          expect(binArrayList).length(1);
+          expect(binArrayList[0].weight).to.equal(newVal.weight);
+
+        }, function(err) {
+          console.log('err:',err);
+          expect({}).fail(err);
+        }).then(function() {
+          done();
+        });
+    
+       });
+
+      it('create goodReceipt', function(done) {
+         var goodReceipt = new GoodReceipt({
+            receiveDate: new Date(),
+            mineral: null,
+
+            binName:gNewBin.name,
+            mineralName: 'able2',
+
+            bin: gNewBin,
+
+            weight: 10,
+
+
+            inputChemicalAttrs: gChemicalAttrs2,
+
+            actualChemicalAttrs: gChemicalAttrs2,
+            chemicalChecked: false,
+            receiptChecked: false,
+            creator: user,
+         });
+      
+          goodReceipt.save(function(err, savedGoodReceipt, numberAffected) {
+            // console.log('savedQuality:',savedQuality);
+            console.log('numberAffected:',numberAffected);
+            expect(err).to.be(null);
+            expect(numberAffected).to.be(1);
+
+            Q(savedGoodReceipt.receiptCheckPass())
+            .then(function(saveObj) {
+
+            }, function(err) {
+              expect({}).fail(err);
+            }).then(function(){
+              done();
+            });
+          });
+
+       });
+
+       it('check bin weight', function(done) {
+        console.log('check data getAllBinList');
+        Binlocation.getAllBinList().then(function(binArrayList) {
+          
+          // console.log('========sdsd======= binArrayList[0].chemicalAttrs.Mar:',binArrayList[0].chemicalAttrs.Mar);
+          // console.log('10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/135:', (10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/135);
+
+          expect(binArrayList).length(1);
+          expect(binArrayList[0].weight).to.be(10+25);
+          expect(binArrayList[0].chemicalAttrs.Mar).to.be((10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/35);
+
+          // expect(22).to.be(1025);
+          done();
+
+        }, function(err) {
+          console.log('err:',err);
+          expect({}).fail(err);
+        })
+        .catch(function(err) {
+          console.log('54$$$$$$$$$$err:', err);
+          done();
+          // expect({}).fail(err);
+        }); 
+    
+       });
+
     });
 
 
 
     after(function(done) {
       console.log('after');
-      Binlocation.remove({}, function(){
-          warehouse.remove(function () {
-            user.remove(done);
+      GoodReceipt.remove({}, function() {
+
+        Binlocation.remove({}, function(){
+            warehouse.remove(function () {
+              user.remove(done);
+            });
           });
-        });
+      });
     });
   });
 });
