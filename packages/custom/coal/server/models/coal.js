@@ -294,14 +294,21 @@ BinlocationSchema.static('getAllBinList',
     var p = Binlocation.findOne({status:'new', name: goodReceipt.binName}).exec(); 
     p.addCallback(function(bin) {
       console.log('before update bin:', bin.weight);
-      var oldWeight = bin.weight; 
-      bin.weight += goodReceipt.weight;
-      //update chemical data
-      for (var key in ChemicalAttrSchemaDef) {
-        // console.log('====== key is:', key);
-        bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.inputChemicalAttrs[key]) / bin.weight;
+      if (fromChemicalChecker) {
+        //no need update weight, update chemical attrs only
+        for (var key in ChemicalAttrSchemaDef) {
+          bin.chemicalAttrs[key] = bin.chemicalAttrs[key] + goodReceipt.weight * (goodReceipt.actualChemicalAttrs[key] - goodReceipt.inputChemicalAttrs[key]) /bin.weight; 
+          
+        }
+      } else {
+        var oldWeight = bin.weight; 
+        bin.weight += goodReceipt.weight;
+        //update chemical data
+        for (var key in ChemicalAttrSchemaDef) {
+          bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.inputChemicalAttrs[key]) / bin.weight;
+        }
       }
-
+      
       bin.save(function(err, savedObj, numberAffected) {
         // console.log('after update bin:', savedObj.weight);
         if (err) {
@@ -389,6 +396,38 @@ GoodReceiptSchema.method('receiptCheckPass', function() {
     var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
     // console.log('============3');
     Binlocation.updateBinFromGoodReceipt(that, false)
+    .then(function(savedObj) { 
+      // console.log('============4');
+      deferred.resolve(that);
+    }, function(err) {
+      // console.log('============5');
+      deferred.reject(err);
+    });
+ 
+  });
+  return deferred.promise;
+});
+
+GoodReceiptSchema.method('chemicalCheckPass', function() {
+  console.log('============1');
+  if (!this.receiptChecked || this.chemicalChecked) {
+    return this;
+  };
+
+  var that = this;
+
+  this.chemicalChecked = true;
+  //trigger caculation for Binlocation
+  var deferred = Q.defer();
+  this.save(function(err, savedObj, numberAffected) {
+    console.log('============2 err:', err, savedObj);
+    if (err) {
+      deferred.reject(err);
+      return;
+    } 
+    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+    // console.log('============3');
+    Binlocation.updateBinFromGoodReceipt(that, true)
     .then(function(savedObj) { 
       // console.log('============4');
       deferred.resolve(that);
