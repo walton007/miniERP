@@ -68,7 +68,7 @@ var newVal;
 /**
  * Test Suites
  */
-describe('Model Binlocation:', function() {
+describe.only('Model Binlocation:', function() {
   // describe('Model Binlocation:', function() {
   before(function(done) {
 
@@ -111,7 +111,7 @@ describe('Model Binlocation:', function() {
           parentBin: null
         });
       return bin.save(function(err, saveObj) {
-         console.log('saveObj:', saveObj);
+         // console.log('saveObj:', saveObj);
         expect(err).to.be(null);
         done();
       });
@@ -122,7 +122,7 @@ describe('Model Binlocation:', function() {
         // warehouse: warehouse
       // }).populate('creator').populate('warehouse').exec(function(err, qbin) {
      }).populate('creator').exec(function(err, qbin) {
-        console.log('qbin.warehouse:', qbin.warehouse, ' qbin:', qbin);
+        // console.log('qbin.warehouse:', qbin.warehouse, ' qbin:', qbin);
         expect(err).to.be(null);
         expect(qbin.weight).to.equal(bin.weight);
         expect(qbin.creator.name).to.equal(user.name);
@@ -255,15 +255,15 @@ describe('Model Binlocation:', function() {
     });
 
     it('check bin weight', function(done) {
-      console.log('check data getAllBinList');
       Binlocation.getAllBinList().then(function(binArrayList) {
 
           // console.log('========sdsd======= binArrayList[0].chemicalAttrs.Mar:',binArrayList[0].chemicalAttrs.Mar);
           // console.log('10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/135:', (10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/135);
 
           expect(binArrayList).length(1);
-          expect(binArrayList[0].weight).to.be(10 + 25);
-          expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs2.Mar + 25 * gChemicalAttrs.Mar) / 35);
+          expect(binArrayList[0].weight).to.be(25);
+          // expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs2.Mar + 25 * gChemicalAttrs.Mar) / 35);
+          expect(binArrayList[0].chemicalAttrs.Mar).to.be(gChemicalAttrs.Mar);
           done();
 
         }, function(err) {
@@ -299,6 +299,7 @@ describe('Model Binlocation:', function() {
           expect(binArrayList).length(1);
           expect(binArrayList[0].weight).to.be(10 + 25);
           // console.log('gChemicalAttrs3.Mar:',gChemicalAttrs3.Mar, ' gChemicalAttrs.Mar:',gChemicalAttrs.Mar);
+          //10*15 + 25*10
           expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs3.Mar + 25 * gChemicalAttrs.Mar) / 35);
 
           done();

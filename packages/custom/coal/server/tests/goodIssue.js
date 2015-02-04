@@ -52,7 +52,7 @@ var goodIssueDict = {
  * Test Suites
  */
  
-  describe.only('Model GoodIssue:', function() {
+  describe('Model GoodIssue:', function() {
     before(function(done) {
       user = new User({
         name: 'Full name',
@@ -105,8 +105,8 @@ var goodIssueDict = {
           // console.log('[[[]]]] err:', err, ' obj:' , obj);
           expect(err).to.be(null);
 
-          obj.modifyWeight(15).then(function(updateObj) {
-            // console.log('updateObj:', updateObj);
+          Q(obj.modifyWeight(15)).then(function(updateObj) {
+            console.log('modifyWeight:', updateObj);
             expect(updateObj.status).to.be('revised');
             done();
           });

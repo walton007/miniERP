@@ -81,8 +81,9 @@ describe('<Unit Test>', function() {
       it('should be able to save without problems', function(done) {
         var goodReceipt = new GoodReceipt(goodReceiptDict);
         goodReceipt.save(function(err, savedQuality, numberAffected) {
+          // console.log('err:',err);
           // console.log('savedQuality:',savedQuality);
-          console.log('numberAffected:',numberAffected);
+          // console.log('numberAffected:',numberAffected);
           expect(err).to.be(null);
           done();
         });

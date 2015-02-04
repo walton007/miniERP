@@ -217,7 +217,7 @@ BinlocationSchema.static('getAllBinList',
 );
 
  BinlocationSchema.static('updateBinFromGoodReceipt', 
-  function(goodReceipt, fromChemicalChecker) {
+  function(goodReceipt) {
     // console.log('===updateBinFromGoodReceipt 6');
     var deferred = Q.defer();
      
@@ -225,20 +225,30 @@ BinlocationSchema.static('getAllBinList',
     var p = Binlocation.findOne({status:'new', name: goodReceipt.binName}).exec(); 
     p.addCallback(function(bin) {
       console.log('before update bin:', bin.weight);
-      if (fromChemicalChecker) {
-        //no need update weight, update chemical attrs only
-        for (var key in ChemicalAttrSchemaDef) {
-          bin.chemicalAttrs[key] = bin.chemicalAttrs[key] + goodReceipt.weight * (goodReceipt.actualChemicalAttrs[key] - goodReceipt.inputChemicalAttrs[key]) /bin.weight; 
-          
-        }
-      } else {
-        var oldWeight = bin.weight; 
-        bin.weight += goodReceipt.weight;
-        //update chemical data
-        for (var key in ChemicalAttrSchemaDef) {
-          bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.inputChemicalAttrs[key]) / bin.weight;
-        }
+      var oldWeight = bin.weight; 
+       
+      bin.weight += goodReceipt.weight;
+      //update chemical data
+      for (var key in ChemicalAttrSchemaDef) {
+        bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.actualChemicalAttrs[key]) / bin.weight;
       }
+
+      // if (fromChemicalChecker) {
+      //   var oldWeight = goodReceipt.cacheBinWeight; 
+      //   //no need update weight, update chemical attrs only 30 + 10 + 10 
+      //   for (var key in ChemicalAttrSchemaDef) {
+      //     bin.chemicalAttrs[key] = bin.chemicalAttrs[key] + goodReceipt.weight * (goodReceipt.actualChemicalAttrs[key] - goodReceipt.inputChemicalAttrs[key]) /bin.weight; 
+          
+      //   }
+      // } else {
+      //   var oldWeight = bin.weight; 
+      //   goodReceipt.cacheBinWeight = oldWeight;
+      //   bin.weight += goodReceipt.weight;
+      //   //update chemical data
+      //   for (var key in ChemicalAttrSchemaDef) {
+      //     bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.inputChemicalAttrs[key]) / bin.weight;
+      //   }
+      // }
       
       bin.save(function(err, savedObj, numberAffected) {
         // console.log('after update bin:', savedObj.weight);
@@ -267,8 +277,8 @@ BinlocationSchema.static('updateBinFromGoodIssue',
     p.addCallback(function(bin) {
       console.log('before update bin:', bin.weight);
       if (bin.weight < goodIssue.weight) {
-        
-
+        deferred.reject('bad inventory');
+        return;
       };
       bin.weight -= goodIssue.weight;
       bin.save(function(err, savedObj, numberAffected) {
@@ -344,7 +354,7 @@ GoodReceiptSchema.method('receiptCheckPass', function() {
     return this;
   };
 
-  var that = this;
+  // var that = this;
 
   this.receiptChecked = true;
   //trigger caculation for Binlocation
@@ -355,23 +365,13 @@ GoodReceiptSchema.method('receiptCheckPass', function() {
       deferred.reject(err);
       return;
     } 
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
-    // console.log('============3');
-    Binlocation.updateBinFromGoodReceipt(that, false)
-    .then(function(savedObj) { 
-      // console.log('============4');
-      deferred.resolve(that);
-    }, function(err) {
-      // console.log('============5');
-      deferred.reject(err);
-    });
- 
+    deferred.resolve(savedObj);
   });
   return deferred.promise;
 });
 
 GoodReceiptSchema.method('chemicalCheckPass', function() {
-  // console.log('============1');
+  console.log('============1');
   if (!this.receiptChecked || this.chemicalChecked) {
     return this;
   };
@@ -387,16 +387,18 @@ GoodReceiptSchema.method('chemicalCheckPass', function() {
       deferred.reject(err);
       return;
     } 
+
     var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
     // console.log('============3');
-    Binlocation.updateBinFromGoodReceipt(that, true)
+    Binlocation.updateBinFromGoodReceipt(savedObj)
     .then(function(savedObj) { 
-      // console.log('============4');
-      deferred.resolve(that);
+      console.log('============4');
+      deferred.resolve(savedObj);
     }, function(err) {
-      // console.log('============5');
+      console.log('============5');
       deferred.reject(err);
     });
+    
  
   });
   return deferred.promise;
@@ -488,27 +490,25 @@ GoodIssueSchema.method('checkPass', function() {
     return this;
   };
 
-  var that = this;
-  this.status = 'checked';
-
   var deferred = Q.defer();
-  this.save(function(err, savedObj, numberAffected) {
-    if (err) {
-      deferred.reject(err);
-      return;
-    } 
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
-    // console.log('============3');
-    Binlocation.updateBinFromGoodIssue(that)
-    .then(function(savedObj) { 
-      // console.log('============4');
-      deferred.resolve(that);
-    }, function(err) {
-      // console.log('============5');
-      deferred.reject(err);
+  var that = this;
+  var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+  Binlocation.updateBinFromGoodIssue(this)
+  .then(function(savedObj) { 
+    // console.log('============4');
+    that.status = 'checked';
+    that.save(function(err, savedObj, numberAffected) {
+      if (err) {
+        deferred.reject(err);
+        return;
+      } 
+      deferred.resolve(savedObj);
     });
- 
+  }, function(err) {
+    // console.log('============5');
+    deferred.reject(err);
   });
+
   return deferred.promise;
 });
  
