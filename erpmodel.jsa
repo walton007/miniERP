@@ -420,3 +420,8 @@ tran.save();
                 一旦化验员化验并且审核通过之后，利用更新的媒质来计算库存重量和媒质，但是需要留底。需要留底查询，@张创设计
 // 2. 
 
+
+
+  //need to cache binlocation weight data in this stage (good receipt check pass)
+
+
