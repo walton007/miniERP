@@ -96,75 +96,6 @@ var QualitySchema = BaseSchema.extend({
 
 mongoose.model('Quality', QualitySchema);
 
-/**
- * QualitySchema Statics
- */
-// QualitySchema.statics = {
-//   addQuality: function(newQuality, cb) {
-//     var deferred = Q.defer();
-
-//     console.log('typeof this:', (typeof this));
-//     var p = this.findOne({}).exec();
-//     p.addCallback(function(quality) {
-//       quality = quality ? quality : new Quality({
-//         contents: []
-//       });
-
-//       if (quality.contents.indexOf(newQuality) < 0) {
-//         quality.contents.push(newQuality);
-//       }
-
-//       quality.save(function(err, savedQuality, numberAffected) {
-//         console.log(err, savedQuality, numberAffected);
-//         if (err) {
-//           deferred.reject(err);
-//         } else {
-//           deferred.resolve(savedQuality.contents);
-//         }
-//       });
-//     });
-
-//     p.addErrback(function(err) {
-//       deferred.reject(err);
-//     });
-
-//     return deferred.promise.nodeify(cb);
-//   },
-
-//   getQuality: function(cb) {
-//     var deferred = Q.defer();
-
-//     var p = this.findOne({}).exec();
-//     p.addCallback(function(quality) {
-//       var contents = quality ? quality.contents : [];
-//       deferred.resolve(contents); 
-//     });
-
-//     p.addErrback(function(err) {
-//       deferred.reject(err);
-//     });
-
-//     return deferred.promise.nodeify(cb);
-//   },
-
-//   validate: function(quality, cb) {
-//     Quality.getQuality(function(err, contents) {
-//       //console.log('QualitySchema.validate:', err, contents);
-//       if (err) {
-//         cb(false);
-//         return; 
-//       }
-//       if (contents.indexOf(quality) < 0) {
-//         cb(false);
-//         return;
-//       }
-
-//       cb(true);
-//     });
-//   }
-// };
-
-
 var MineralSchema = BaseSchema.extend({
   name: {
     type: String,
@@ -327,6 +258,37 @@ BinlocationSchema.static('getAllBinList',
   }
 );
 
+BinlocationSchema.static('updateBinFromGoodIssue', 
+  function(goodIssue) {
+    var deferred = Q.defer();
+     
+    var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
+    var p = Binlocation.findOne({status:'new', name: goodIssue.binName}).exec(); 
+    p.addCallback(function(bin) {
+      console.log('before update bin:', bin.weight);
+      if (bin.weight < goodIssue.weight) {
+        
+
+      };
+      bin.weight -= goodIssue.weight;
+      bin.save(function(err, savedObj, numberAffected) {
+        // console.log('after update bin:', savedObj.weight);
+        if (err) {
+          deferred.reject(err);
+        } else {
+          deferred.resolve(savedObj);
+        }
+      });
+    });
+
+    p.addErrback(function(err) {
+      deferred.reject(err);
+    });
+   
+    return deferred.promise;
+  }
+);
+
 mongoose.model('Binlocation', BinlocationSchema); 
  
 var GoodReceiptSchema = BaseSchema.extend({
@@ -409,7 +371,7 @@ GoodReceiptSchema.method('receiptCheckPass', function() {
 });
 
 GoodReceiptSchema.method('chemicalCheckPass', function() {
-  console.log('============1');
+  // console.log('============1');
   if (!this.receiptChecked || this.chemicalChecked) {
     return this;
   };
@@ -465,17 +427,91 @@ var GoodIssueSchema = BaseSchema.extend({
     required: true
   },
 
-  oldWeight: Number,
+  oldWeight: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 
   status: {
     type: String,
     required: true,
     default: 'new',
-    enum: ['new', 'revised', 'trash','checked'],
+    enum: ['new', 'revised', 'reviseback', 'checked'],
   },
    
 });
- 
 
+GoodIssueSchema.method('modifyWeight', function(newWeight) {
+  if (this.status !== 'new' && this.status !== 'reviseback') {
+    return this;
+  };
+
+  this.oldWeight = this.weight;
+  this.weight = newWeight;
+  this.status = 'revised';
+
+  var deferred = Q.defer();
+  this.save(function(err, savedObj, numberAffected) {
+    if (err) {
+      deferred.reject(err);
+      return;
+    } 
+    deferred.resolve(savedObj);
+ 
+  });
+  return deferred.promise;
+});
+
+GoodIssueSchema.method('revertWeight', function() {
+  if (this.status !== 'revised') {
+    return this;
+  };
+
+  this.status = 'reviseback';
+  this.weight = this.oldWeight;
+
+  var deferred = Q.defer();
+  this.save(function(err, savedObj, numberAffected) {
+    if (err) {
+      deferred.reject(err);
+      return;
+    } 
+    deferred.resolve(savedObj);
+ 
+  });
+  return deferred.promise;
+});
+
+GoodIssueSchema.method('checkPass', function() {
+  if (this.status === 'checked') {
+    return this;
+  };
+
+  var that = this;
+  this.status = 'checked';
+
+  var deferred = Q.defer();
+  this.save(function(err, savedObj, numberAffected) {
+    if (err) {
+      deferred.reject(err);
+      return;
+    } 
+    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+    // console.log('============3');
+    Binlocation.updateBinFromGoodIssue(that)
+    .then(function(savedObj) { 
+      // console.log('============4');
+      deferred.resolve(that);
+    }, function(err) {
+      // console.log('============5');
+      deferred.reject(err);
+    });
+ 
+  });
+  return deferred.promise;
+});
+ 
+autoinc.plugin(GoodReceiptSchema, {model: 'GoodIssue', field: 'sequence', start: 1});
 mongoose.model('GoodIssue', GoodIssueSchema);
  
