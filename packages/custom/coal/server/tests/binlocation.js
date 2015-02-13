@@ -12,6 +12,7 @@ var expect = require('expect.js'),
   Warehouse = mongoose.model('Warehouse'),
   Binlocation = mongoose.model('Binlocation'),
   GoodReceipt = mongoose.model('GoodReceipt'),
+  GoodIssue = mongoose.model('GoodIssue'),
   _ = require('lodash');
 
 var Q = require('q');
@@ -98,7 +99,7 @@ describe.only('Model Binlocation:', function() {
 
   });
 
-  describe('Method Save', function() {
+  describe('Binlocation Save', function() {
     it('should be able to create without problems', function(done) {
       bin = new Binlocation({
           creator: user,
@@ -110,8 +111,8 @@ describe.only('Model Binlocation:', function() {
           warehouseName: warehouse.name,
           parentBin: null
         });
-      return bin.save(function(err, saveObj) {
-         // console.log('saveObj:', saveObj);
+      bin.save(function(err, saveObj) {
+         // console.log('==== saveObj:', saveObj);
         expect(err).to.be(null);
         done();
       });
@@ -122,7 +123,7 @@ describe.only('Model Binlocation:', function() {
         // warehouse: warehouse
       // }).populate('creator').populate('warehouse').exec(function(err, qbin) {
      }).populate('creator').exec(function(err, qbin) {
-        // console.log('qbin.warehouse:', qbin.warehouse, ' qbin:', qbin);
+        // console.log('=== findOne bin err:', err, ' qbin:', qbin);
         expect(err).to.be(null);
         expect(qbin.weight).to.equal(bin.weight);
         expect(qbin.creator.name).to.equal(user.name);
@@ -147,7 +148,7 @@ describe.only('Model Binlocation:', function() {
 
   });
 
-  describe('Test Static Method', function() {
+  describe('Binlocation Static Method', function() {
     it('should be able to updateBinManually', function(done) {
       Binlocation.findOne({
         status: 'new'
@@ -198,23 +199,9 @@ describe.only('Model Binlocation:', function() {
         done();
       });
     });
+  });
 
-    it('check getAllBinList', function(done) {
-      console.log('check data getAllBinList');
-      Binlocation.getAllBinList().then(function(binArrayList) {
-        // console.log();
-        expect(binArrayList).length(1);
-        expect(binArrayList[0].weight).to.equal(newVal.weight);
-
-      }, function(err) {
-        console.log('err:', err);
-        expect({}).fail(err);
-      }).then(function() {
-        done();
-      });
-
-    });
-
+  describe('Good Receipt and Issue in bin', function() {
     it('create goodReceipt', function(done) {
       var goodReceipt = new GoodReceipt({
         receiveDate: new Date(),
@@ -227,43 +214,30 @@ describe.only('Model Binlocation:', function() {
 
         weight: 10,
 
-
         inputChemicalAttrs: gChemicalAttrs2,
 
         actualChemicalAttrs: gChemicalAttrs3,
         chemicalChecked: false,
-        receiptChecked: false,
         creator: user,
       });
 
       goodReceipt.save(function(err, savedGoodReceipt, numberAffected) {
-        // console.log('savedQuality:',savedQuality);
-        console.log('numberAffected:', numberAffected);
+        // console.log('savedGoodReceipt:',savedGoodReceipt);
+        // console.log('numberAffected:', numberAffected);
         expect(err).to.be(null);
         expect(numberAffected).to.be(1);
-
-        Q(savedGoodReceipt.receiptCheckPass())
-          .then(function(saveObj) {
-
-          }, function(err) {
-            expect({}).fail(err);
-          }).then(function() {
-            done();
-          });
+        done();
       });
 
     });
 
-    it('check bin weight', function(done) {
+    it('check bin weight after goodReceipt', function(done) {
       Binlocation.getAllBinList().then(function(binArrayList) {
-
-          // console.log('========sdsd======= binArrayList[0].chemicalAttrs.Mar:',binArrayList[0].chemicalAttrs.Mar);
-          // console.log('10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/135:', (10*gChemicalAttrs2.Mar+25*gChemicalAttrs.Mar)/135);
-
+          // console.log('Binlocation.getAllBinList() return:', binArrayList);
           expect(binArrayList).length(1);
-          expect(binArrayList[0].weight).to.be(25);
-          // expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs2.Mar + 25 * gChemicalAttrs.Mar) / 35);
-          expect(binArrayList[0].chemicalAttrs.Mar).to.be(gChemicalAttrs.Mar);
+          expect(binArrayList[0].weight).to.be(35);
+          expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs2.Mar + 25 * gChemicalAttrs.Mar) / 35);
+          // expect(binArrayList[0].chemicalAttrs.Mar).to.be(gChemicalAttrs.Mar);
           done();
 
         }, function(err) {
@@ -279,22 +253,25 @@ describe.only('Model Binlocation:', function() {
 
     it('update goodReceipt', function(done) {
       GoodReceipt.findOne({
-        receiptChecked: true
-      }).exec(function(err, goodReceipt) {
+        status: 'new'
+      }).populate('bin').exec(function(err, goodReceipt) {
+        // console.log('==update goodReceipt find goodReceipt err:', err, ' goodReceipt:', goodReceipt);
         expect(err).to.be(null);
 
-        Q(goodReceipt.chemicalCheckPass())
+        Q(goodReceipt.chemicalCheck())
           .then(function(saveObj) {
+            expect(saveObj.status).to.be('checked');
 
           }, function(err) {
             expect({}).fail(err);
           }).then(function() {
+            // console.log('===done');
             done();
           });
       });
     });
 
-    it('check bin chemical data', function(done) {
+    it('check bin chemical data after chemicalCheck', function(done) {
       Binlocation.getAllBinList().then(function(binArrayList) {
           expect(binArrayList).length(1);
           expect(binArrayList[0].weight).to.be(10 + 25);
@@ -312,17 +289,82 @@ describe.only('Model Binlocation:', function() {
           console.error('error:', err);
         });
     });
+
+    it('create goodIssue', function(done) {
+      var goodIssue = new GoodIssue({
+        issueDate: new Date(),
+
+        binName: gNewBin.name, 
+        bin: gNewBin,
+
+        planWeight: 10,
+        creator: user,
+      });
+
+      goodIssue.save(function(err, savedGoodIssue, numberAffected) {
+        // console.log('savedQuality:',savedQuality);
+        // console.log('numberAffected:', numberAffected);
+        expect(err).to.be(null);
+        expect(numberAffected).to.be(1);
+        done();
+      });
+
+    });
+
+    it('check bin weight and chemical after create issue planning', function(done) {
+      Binlocation.getAllBinList().then(function(binArrayList) {
+        expect(binArrayList).length(1);
+        expect(binArrayList[0].weight).to.equal(25+10);
+        expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs3.Mar + 25 * gChemicalAttrs.Mar) / 35);
+      }, function(err) {
+        console.log('err:', err);
+        expect({}).fail(err);
+      }).then(function() {
+        done();
+      });
+    });
+
+    it('goodIssue status change to checked', function(done) {
+      GoodIssue.findOne({status:'planning'}).exec(function(err, goodIssue) {
+        expect(err).to.be(null);
+        goodIssue.recordActualCost(11)
+        .then(function(savedObj) {
+          expect(savedObj.status).to.be('checked');
+        }, function(err) {
+          console.error('err:', err);
+        });
+      }, function(err) {
+        console.log('err:', err);
+        expect({}).fail(err);
+      }).then(function() {
+        done();
+      });
+    });
+
+    it('check bin weight and chemical after good issue confirmed', function(done) {
+      Binlocation.getAllBinList().then(function(binArrayList) {
+        // console.log('=== check bin weight and chemical after good issue confirmed binArrayList:', binArrayList);
+        expect(binArrayList).length(1);
+        expect(binArrayList[0].weight).to.equal(25+10-11);
+        expect(binArrayList[0].chemicalAttrs.Mar).to.be((10 * gChemicalAttrs3.Mar + 25 * gChemicalAttrs.Mar) / 35);
+      }, function(err) {
+        console.log('err:', err);
+        expect({}).fail(err);
+      }).then(function() {
+        console.log('====done====');
+        done();
+      });
+    });
   });
-
-
 
   after(function(done) {
     console.log('after binlocation');
     GoodReceipt.remove({}, function() {
-
-      Binlocation.remove({}, function() {
-        warehouse.remove(function() {
-          user.remove(done);
+      GoodIssue.remove({}, function() {
+        Binlocation.remove({}, function() {
+          warehouse.remove(function() {
+            user.remove(done);
+          });
         });
       });
     });

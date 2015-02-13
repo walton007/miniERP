@@ -5,89 +5,16 @@
  */
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
- // crypto = require('crypto'),
- // _ = require('lodash'),
+  // crypto = require('crypto'),
+  // _ = require('lodash'),
   Q = require('q'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  math = require('mathjs'),
+  commonUtil = require('./commonUtil');
 
-require('mongoose-schema-extend');
+var BaseSchema = commonUtil.BaseSchema;
+var ChemicalAttrSchemaDef = commonUtil.ChemicalAttrSchemaDef;
 
-var autoinc = require('./autoinc');
-
-//Need administrator to config these information: InventoryUnit, InventorySchema, QualitySchema, CoalMine
-var BaseSchema = new Schema({
-  creatorName: String,
-  creator: {
-    type: Schema.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  created: {
-    type: Date,
-    default: Date.now,
-    required: true
-  },
-  modified: {
-    type: Date,
-    default: Date.now
-  },
-  
-  deleteFlag: {
-    type: Boolean,
-    default: false
-  },
-});
-
- 
-BaseSchema.pre('save', function(next) {
-  if (!this.isNew) {
-    // console.log('update modified date');
-    this.modified = Date.now();
-  } else {
-    // console.log('add new object');
-    this.created = Date.now();
-  }
-
-  next();
-});
-
-BaseSchema.method('markDelete', function() {
-  var deferred = Q.defer();
-  console.log('markDelete');
-  this.deleteFlag = true;
-  this.save(function(err, savedObj, numberAffected) {
-    if (err) {
-      deferred.reject(err);
-    } else {
-      deferred.resolve(savedObj);
-    }
-  });
-  return deferred.promise;
-});
-
-var ChemicalAttrSchemaDef = {  
-  Mar: Number,
-  Mad: Number,
-  Aad: Number,
-  Ad: Number,
-  Vad: Number,
-  Vdaf: Number,
-  FCad: Number,
-  St_ad: Number,
-  Qb_ad: Number,
-  Qgr_d: Number,
-  Qnet_v_ar: Number,
-  Qnet_v_ar_cal: Number,
-
-  power: {
-    type: Number,
-    required: true
-  },
-  nitrogen: {
-    type: Number,
-    required: true
-  },
-}; 
 
 var QualitySchema = BaseSchema.extend({
   name: String,
@@ -133,12 +60,12 @@ var BinlocationSchema = BaseSchema.extend({
     required: true,
     trim: true,
   },
-  
+
   weight: {
     type: Number,
     required: true
   },
- 
+
   chemicalAttrs: ChemicalAttrSchemaDef,
   warehouseName: String,
   warehouse: {
@@ -159,11 +86,11 @@ var BinlocationSchema = BaseSchema.extend({
   },
 
 });
- 
-BinlocationSchema.static('updateBinManually', 
+
+BinlocationSchema.static('updateBinManually',
   function(oldBin, newVal) {
     console.log('oldbin, newVal');
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
+    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
 
     //Create a new record to mark as current binlocation inventory
     _.extend(newVal, {
@@ -185,333 +112,208 @@ BinlocationSchema.static('updateBinManually',
 
 
     Q.all([Q.ninvoke(newBin, 'save'), Q.ninvoke(oldBin, 'save'), Q.ninvoke(historyPostBin, 'save')])
-      .then(function (results) {
+      .then(function(results) {
         // console.log('results:', results);
         deferred.resolve(newBin);
-       
+
       }, function(err) {
-        console.log('err:',err);
+        console.log('err:', err);
         deferred.reject('failed to updateBinManually');
       });
     return deferred.promise;
   }
 );
 
-BinlocationSchema.static('getAllBinList', 
+BinlocationSchema.static('getAllBinList',
   function() {
-    console.log('getBinList');
+    // console.log('getBinList');
     var deferred = Q.defer();
-
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
-    var p = Binlocation.find({status:'new'}).exec(); 
-    p.addCallback(function(binList) {
-      deferred.resolve(binList);
-    });
-
-    p.addErrback(function(err) {
-      deferred.reject(err);
-    });
-   
-    return deferred.promise;
-  }
-);
-
- BinlocationSchema.static('updateBinFromGoodReceipt', 
-  function(goodReceipt) {
-    // console.log('===updateBinFromGoodReceipt 6');
-    var deferred = Q.defer();
-     
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
-    var p = Binlocation.findOne({status:'new', name: goodReceipt.binName}).exec(); 
-    p.addCallback(function(bin) {
-      console.log('before update bin:', bin.weight);
-      var oldWeight = bin.weight; 
-       
-      bin.weight += goodReceipt.weight;
-      //update chemical data
-      for (var key in ChemicalAttrSchemaDef) {
-        bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.actualChemicalAttrs[key]) / bin.weight;
-      }
-
-      // if (fromChemicalChecker) {
-      //   var oldWeight = goodReceipt.cacheBinWeight; 
-      //   //no need update weight, update chemical attrs only 30 + 10 + 10 
-      //   for (var key in ChemicalAttrSchemaDef) {
-      //     bin.chemicalAttrs[key] = bin.chemicalAttrs[key] + goodReceipt.weight * (goodReceipt.actualChemicalAttrs[key] - goodReceipt.inputChemicalAttrs[key]) /bin.weight; 
-          
-      //   }
-      // } else {
-      //   var oldWeight = bin.weight; 
-      //   goodReceipt.cacheBinWeight = oldWeight;
-      //   bin.weight += goodReceipt.weight;
-      //   //update chemical data
-      //   for (var key in ChemicalAttrSchemaDef) {
-      //     bin.chemicalAttrs[key] = (bin.chemicalAttrs[key] * oldWeight + goodReceipt.weight * goodReceipt.inputChemicalAttrs[key]) / bin.weight;
-      //   }
-      // }
-      
-      bin.save(function(err, savedObj, numberAffected) {
-        // console.log('after update bin:', savedObj.weight);
-        if (err) {
-          deferred.reject(err);
-        } else {
-          deferred.resolve(savedObj);
-        }
-      });
-    });
-
-    p.addErrback(function(err) {
-      deferred.reject(err);
-    });
-   
-    return deferred.promise;
-  }
-);
-
-BinlocationSchema.static('updateBinFromGoodIssue', 
-  function(goodIssue) {
-    var deferred = Q.defer();
-     
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema); 
-    var p = Binlocation.findOne({status:'new', name: goodIssue.binName}).exec(); 
-    p.addCallback(function(bin) {
-      console.log('before update bin:', bin.weight);
-      if (bin.weight < goodIssue.weight) {
-        deferred.reject('bad inventory');
-        return;
-      };
-      bin.weight -= goodIssue.weight;
-      bin.save(function(err, savedObj, numberAffected) {
-        // console.log('after update bin:', savedObj.weight);
-        if (err) {
-          deferred.reject(err);
-        } else {
-          deferred.resolve(savedObj);
-        }
-      });
-    });
-
-    p.addErrback(function(err) {
-      deferred.reject(err);
-    });
-   
-    return deferred.promise;
-  }
-);
-
-mongoose.model('Binlocation', BinlocationSchema); 
- 
-var GoodReceiptSchema = BaseSchema.extend({
-  receiveDate: {
-    type: Date,
-    required: true,
-  },
-  mineralName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  mineral: {
-    type: Schema.ObjectId,
-    ref: 'Mineral'
-  },
-
-  binName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  bin: {
-    type: Schema.ObjectId,
-    ref: 'Binlocation'
-  },
-
-  weight: {
-    type: Number,
-    required: true
-  },
-
-  receiptChecked: {
-    type: Boolean,
-    required: true
-  },
-
-  inputChemicalAttrs: ChemicalAttrSchemaDef,
-
-  actualChemicalAttrs: ChemicalAttrSchemaDef,
-  chemicalChecked: {
-    type: Boolean,
-    required: true
-  },
-  
-});
-
-GoodReceiptSchema.method('receiptCheckPass', function() {
-  // console.log('============1');
-  if (this.receiptChecked) {
-    return this;
-  };
-
-  // var that = this;
-
-  this.receiptChecked = true;
-  //trigger caculation for Binlocation
-  var deferred = Q.defer();
-  this.save(function(err, savedObj, numberAffected) {
-    // console.log('============2 err:', err, savedObj);
-    if (err) {
-      deferred.reject(err);
-      return;
-    } 
-    deferred.resolve(savedObj);
-  });
-  return deferred.promise;
-});
-
-GoodReceiptSchema.method('chemicalCheckPass', function() {
-  console.log('============1');
-  if (!this.receiptChecked || this.chemicalChecked) {
-    return this;
-  };
-
-  var that = this;
-
-  this.chemicalChecked = true;
-  //trigger caculation for Binlocation
-  var deferred = Q.defer();
-  this.save(function(err, savedObj, numberAffected) {
-    console.log('============2 err:', err, savedObj);
-    if (err) {
-      deferred.reject(err);
-      return;
-    } 
 
     var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
-    // console.log('============3');
-    Binlocation.updateBinFromGoodReceipt(savedObj)
-    .then(function(savedObj) { 
-      console.log('============4');
-      deferred.resolve(savedObj);
-    }, function(err) {
-      console.log('============5');
+    var p = Binlocation.find({
+      status: 'new'
+    }).exec();
+    p.addCallback(function(binList) {
+      //getInventoryInfo 
+      var deferArr = [];
+      for (var i = binList.length - 1; i >= 0; i--) {
+        deferArr.push(binList[i].getInventoryInfo());
+      };
+      Q.all(deferArr).then(function(binArr) {
+        // console.log('getAllBinList binArr:', binArr);
+        deferred.resolve(binArr);
+      }, function(err) {
+        deferred.reject(err);
+      });
+    });
+
+    p.addErrback(function(err) {
       deferred.reject(err);
+    });
+
+    return deferred.promise;
+  }
+);
+
+BinlocationSchema.method('getInventoryInfo',
+  function() {
+    var deferred = Q.defer();
+
+    var now = new Date();
+
+    var that = this;
+
+
+    var GoodReceipt = mongoose.model('GoodReceipt');
+    var GoodIssue = mongoose.model('GoodIssue');
+
+    //try to update snapshot
+    GoodReceipt.find({
+        deleteFlag: false,
+        bin: that,
+      }).where('receiveDate').gt(this.modified).sort('receiveDate')
+      .exec(function(err, goodReceipts) {
+        if (err) {
+          deferred.reject(err);
+          return;
+        };
+
+        //check all GoodIssue during this period
+        GoodIssue.find({
+            deleteFlag: false,
+            bin: that,
+            status: 'checked',
+          }).where('issueDate').gt(that.modified).sort('issueDate')
+          .exec(function(err, goodIssues) {
+            if (err) {
+              deferred.reject(err);
+              return;
+            };
+
+            var updateObj = that._caculate(goodReceipts, goodIssues);
+            deferred.resolve(updateObj);
+            return;
+          });
+      });
+
+    return deferred.promise;
+
+  });
+
+BinlocationSchema.method('_caculate',
+  function(goodReceipts, goodIssues) {
+    _(goodIssues).forEach(function(goodIssue) {
+      goodReceipts.push(goodIssue);
     });
     
- 
-  });
-  return deferred.promise;
-});
-
-autoinc.plugin(GoodReceiptSchema, {model: 'GoodReceipt', field: 'sequence', start: 1});
-mongoose.model('GoodReceipt', GoodReceiptSchema);
- 
-
-var GoodIssueSchema = BaseSchema.extend({
-  issueDate: {
-    type: Date,
-  },
-
-  binName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  bin: {
-    type: Schema.ObjectId,
-    ref: 'Binlocation'
-  },
-
-  weight: {
-    type: Number,
-    required: true
-  },
-
-  oldWeight: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-
-  status: {
-    type: String,
-    required: true,
-    default: 'new',
-    enum: ['new', 'revised', 'reviseback', 'checked'],
-  },
-   
-});
-
-GoodIssueSchema.method('modifyWeight', function(newWeight) {
-  if (this.status !== 'new' && this.status !== 'reviseback') {
-    return this;
-  };
-
-  this.oldWeight = this.weight;
-  this.weight = newWeight;
-  this.status = 'revised';
-
-  var deferred = Q.defer();
-  this.save(function(err, savedObj, numberAffected) {
-    if (err) {
-      deferred.reject(err);
-      return;
-    } 
-    deferred.resolve(savedObj);
- 
-  });
-  return deferred.promise;
-});
-
-GoodIssueSchema.method('revertWeight', function() {
-  if (this.status !== 'revised') {
-    return this;
-  };
-
-  this.status = 'reviseback';
-  this.weight = this.oldWeight;
-
-  var deferred = Q.defer();
-  this.save(function(err, savedObj, numberAffected) {
-    if (err) {
-      deferred.reject(err);
-      return;
-    } 
-    deferred.resolve(savedObj);
- 
-  });
-  return deferred.promise;
-});
-
-GoodIssueSchema.method('checkPass', function() {
-  if (this.status === 'checked') {
-    return this;
-  };
-
-  var deferred = Q.defer();
-  var that = this;
-  var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
-  Binlocation.updateBinFromGoodIssue(this)
-  .then(function(savedObj) { 
-    // console.log('============4');
-    that.status = 'checked';
-    that.save(function(err, savedObj, numberAffected) {
-      if (err) {
-        deferred.reject(err);
-        return;
-      } 
-      deferred.resolve(savedObj);
+    var GoodReceipt = mongoose.model('GoodReceipt');
+    var sortedArray = _.sortBy(goodReceipts, function(obj) {
+      // console.log('obj instanceof GoodReceipt:', obj instanceof GoodReceipt);
+      return (obj instanceof GoodReceipt) ? obj.receiveDate: obj.issueDate; 
     });
-  }, function(err) {
-    // console.log('============5');
-    deferred.reject(err);
+
+    // handling
+    for (var i = 0; i < sortedArray.length; i++) {
+
+      var obj = sortedArray[i];
+      if (obj instanceof GoodReceipt) {
+        // console.log('GoodReceipt receiveDate:', obj.receiveDate);
+        var oldWeight = this.weight;
+        this.weight += obj.weight;
+        for (var key in ChemicalAttrSchemaDef) {
+          if (obj.status === 'checked') {
+            this.chemicalAttrs[key] = (this.chemicalAttrs[key] * oldWeight + obj.weight * obj.actualChemicalAttrs[key]) / this.weight;
+          } else {
+            this.chemicalAttrs[key] = (this.chemicalAttrs[key] * oldWeight + obj.weight * obj.inputChemicalAttrs[key]) / this.weight;
+          }
+        }
+      } else {
+        console.log('goodIssue issueDate:', obj.issueDate);
+        this.weight -= obj.actualWeight;
+      }
+    };
+
+    // console.log('=3dfe== this is:', this)
+    return this;
   });
 
-  return deferred.promise;
-});
- 
-autoinc.plugin(GoodReceiptSchema, {model: 'GoodIssue', field: 'sequence', start: 1});
-mongoose.model('GoodIssue', GoodIssueSchema);
- 
+BinlocationSchema.method('updateSnapshot',
+  function(snapshotTm) {
+    var dtd = Q.defer();
+    var GoodReceipt = mongoose.model('GoodReceipt');
+    var GoodIssue = mongoose.model('GoodIssue');
+    if (!snapshotTm) {
+      snapshotTm = new Date();
+    }
+
+    var that = this;
+    //try to update outdated GoodReceipt and GoodIssue before doing any check
+    var dtd1 = GoodReceipt.updateOutdatedRecord();
+    var dtd2 = GoodIssue.updateOutdatedRecord();
+    Q.all([dtd1, dtd2])
+      .then(function(results) {
+        //check whether update snapshot condiction have been satisfied
+        var conddtd1 = Q.defer();
+        GoodReceipt.count({
+            deleteFlag: false,
+            bin: this,
+            status: 'new'
+          }).where('receiveDate').gt(this.modified).lte(snapshotTm).sort('receiveDate')
+        .exec(function(err, count) {
+          if (err) {
+            console.error('failed to find goodReceipt count:',err);
+            conddtd1.reject(err);
+            return;
+          };
+          conddtd1.resolve(count);
+        });
+
+        var conddtd2 = Q.defer();
+        GoodIssue.count({
+            deleteFlag: false,
+            bin: this,
+            status: 'planning'
+          }).where('issueDate').gt(this.modified).lte(snapshotTm).sort('issueDate')
+        .exec(function(err, count) {
+          if (err) {
+            console.error('failed to find goodIssue count:',err);
+            conddtd2.reject(err);
+            return;
+          };
+          conddtd2.resolve(count);
+        });
+
+        Q.all([conddtd1, conddtd2]).spread(function (cnt1, cnt2) {
+          if (cnt1 > 0 || cnt2 > 0) {
+            dtd.resolve();
+            return;
+          };
+          //satisfy update condition
+          console.log('going to update binlocation snapshot');
+          that.getInventoryInfo()
+          .then(function(updatedObj) {
+            updatedObj.save(function(err, savedObj) {
+              if (err) {
+                console.error('failed to updata snapshot due to save error:',err);
+                dtd.reject(err);
+                return;
+              };
+              dtd.resolve(savedObj);
+            });
+          }, function(err) {
+            console.error('failed to updata snapshot due to getInventoryInfo error:',err);
+            dtd.reject(err);
+            return;
+          });
+        });
+
+      }, function(err) {
+        console.log('err:', err);
+        dtd.reject(err);
+      });
+
+    return dtd.promise;
+  }
+);
+
+mongoose.model('Binlocation', BinlocationSchema);
