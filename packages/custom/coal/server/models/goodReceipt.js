@@ -75,24 +75,24 @@ GoodReceiptSchema.static('updateOutdatedRecord',
       if (err) {
         dtd.reject(err);
         return;
-      };
+      }
       var dtdArr = [];
-      for (var i = goodReceipts.length - 1; i >= 0; i--) {
+      for (var i = goodReceipts.length - 1; i >= 0; i=i-1) {
         var goodReceipt = goodReceipts[i];
         var dur = new Date(math.abs(now -goodReceipt.receiveDate));
         if (dur.getUTCHours() > goodReceiptOutdateThreshold) {
           dtdArr.push(goodReceipt.markOutdated());
         }
-      };
-      if (dtdArr.length == 0) {
+      }
+      if (dtdArr.length === 0) {
         dtd.resolve();
         return;
-      };
+      }
       Q.all(dtdArr).then(function() {
         dtd.resolve();
       }, function(err) {
         dtd.reject(err);
-      })
+      });
 
     }); 
     return dtd.promise;
@@ -115,10 +115,10 @@ GoodReceiptSchema.method('markOutdated', function( ) {
 
 GoodReceiptSchema.method('chemicalCheck', function() {
   var deferred = Q.defer();
-  if (this.status != 'new') {
+  if (this.status !== 'new') {
     deferred.reject('only new record can be checked');
     return deferred.promise;
-  };
+  }
 
   this.status = 'checked';
   this.save(function(err, savedObj, numberAffected) {

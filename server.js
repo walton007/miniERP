@@ -6,6 +6,7 @@ var cluster = require('cluster');
 
 
 // Code to run if we're in the master process or if we are not in debug mode/ running tests
+console.log('process.execArgv:', process.execArgv);
 
 if ((cluster.isMaster) && (process.execArgv.indexOf('--debug') < 0) && (process.env.NODE_ENV!=='test') && (process.execArgv.indexOf('--singleProcess')<0)) {
 //if (cluster.isMaster) {

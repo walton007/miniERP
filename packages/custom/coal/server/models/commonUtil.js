@@ -80,7 +80,6 @@ var ChemicalAttrSchemaDef = {
   },
 };
 
-module.exports = exports 
-  = {BaseSchema: BaseSchema,
+module.exports = exports = {BaseSchema: BaseSchema,
      ChemicalAttrSchemaDef: ChemicalAttrSchemaDef,
     }; 

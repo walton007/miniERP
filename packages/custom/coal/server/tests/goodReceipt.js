@@ -75,7 +75,7 @@ describe('<Unit Test>', function() {
         done();
       });
 
-    });
+    })
 
     describe('Check Sequence', function() {
       it('should be able to save without problems', function(done) {

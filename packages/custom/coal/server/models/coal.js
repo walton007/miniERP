@@ -21,6 +21,12 @@ var QualitySchema = BaseSchema.extend({
   comment: String,
 });
 
+QualitySchema.statics.load = function(id, cb) {
+  this.findOne({
+    _id: id
+  }).exec(cb);
+};
+
 mongoose.model('Quality', QualitySchema);
 
 var MineralSchema = BaseSchema.extend({
@@ -42,6 +48,12 @@ var MineralSchema = BaseSchema.extend({
   },
   comment: String,
 });
+
+MineralSchema.statics.load = function(id, cb) {
+  this.findOne({
+    _id: id
+  }).exec(cb);
+};
 
 mongoose.model('Mineral', MineralSchema);
 
@@ -136,9 +148,9 @@ BinlocationSchema.static('getAllBinList',
     p.addCallback(function(binList) {
       //getInventoryInfo 
       var deferArr = [];
-      for (var i = binList.length - 1; i >= 0; i--) {
+      for (var i = binList.length - 1; i >= 0; --i) {
         deferArr.push(binList[i].getInventoryInfo());
-      };
+      }
       Q.all(deferArr).then(function(binArr) {
         // console.log('getAllBinList binArr:', binArr);
         deferred.resolve(binArr);
@@ -176,7 +188,7 @@ BinlocationSchema.method('getInventoryInfo',
         if (err) {
           deferred.reject(err);
           return;
-        };
+        }
 
         //check all GoodIssue during this period
         GoodIssue.find({
@@ -188,7 +200,7 @@ BinlocationSchema.method('getInventoryInfo',
             if (err) {
               deferred.reject(err);
               return;
-            };
+            }
 
             var updateObj = that._caculate(goodReceipts, goodIssues);
             deferred.resolve(updateObj);
@@ -213,7 +225,7 @@ BinlocationSchema.method('_caculate',
     });
 
     // handling
-    for (var i = 0; i < sortedArray.length; i++) {
+    for (var i = 0; i < sortedArray.length; ++i) {
 
       var obj = sortedArray[i];
       if (obj instanceof GoodReceipt) {
@@ -231,7 +243,7 @@ BinlocationSchema.method('_caculate',
         console.log('goodIssue issueDate:', obj.issueDate);
         this.weight -= obj.actualWeight;
       }
-    };
+    }
 
     // console.log('=3dfe== this is:', this)
     return this;
@@ -264,7 +276,7 @@ BinlocationSchema.method('updateSnapshot',
             console.error('failed to find goodReceipt count:',err);
             conddtd1.reject(err);
             return;
-          };
+          }
           conddtd1.resolve(count);
         });
 
@@ -279,7 +291,7 @@ BinlocationSchema.method('updateSnapshot',
             console.error('failed to find goodIssue count:',err);
             conddtd2.reject(err);
             return;
-          };
+          }
           conddtd2.resolve(count);
         });
 
@@ -287,7 +299,7 @@ BinlocationSchema.method('updateSnapshot',
           if (cnt1 > 0 || cnt2 > 0) {
             dtd.resolve();
             return;
-          };
+          }
           //satisfy update condition
           console.log('going to update binlocation snapshot');
           that.getInventoryInfo()
@@ -297,7 +309,7 @@ BinlocationSchema.method('updateSnapshot',
                 console.error('failed to updata snapshot due to save error:',err);
                 dtd.reject(err);
                 return;
-              };
+              }
               dtd.resolve(savedObj);
             });
           }, function(err) {
