@@ -27,13 +27,39 @@ Systemsetting.register(function(app, auth, database) {
     isdefault : true,
   });
 
+  //////////////////////////////////
   Systemsetting.menus.add({
-    title: '系统设置',
+    title: '基础数据设置',
     link: 'systemsetting.inventory',
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting',
-    name: 'one',
-    
+    name: 'one',  
+  });
+
+  Systemsetting.menus.add({
+    title: '煤品设置',
+    link: 'systemsetting.quality',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'quality',
+    isdefault : true,
+  });
+
+  Systemsetting.menus.add({
+    title: '矿场设置',
+    link: 'systemsetting.warehouses',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'warehouse',
+    isdefault : true,
+  });
+
+  Systemsetting.menus.add({
+    title: '矿源设定',
+    link: 'systemsetting.minerals',
+    roles: ['admin', 'worker'],
+    menu: 'main/systemsetting/one',
+    name: 'minerals'
   });
 
   Systemsetting.menus.add({
@@ -42,31 +68,30 @@ Systemsetting.register(function(app, auth, database) {
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
     name: 'inventory',
-    isdefault : true,
   });
 
+  //////////////////////////////////
   Systemsetting.menus.add({
-    title: '矿源设定',
-    link: 'systemsetting.coals',
+    title: '用户管理设置',
+    link: 'systemsetting.users',
     roles: ['admin', 'worker'],
-    menu: 'main/systemsetting/one',
-    name: 'coals'
+    menu: 'main/systemsetting',
+    name: 'two',  
   });
 
   Systemsetting.menus.add({
     title: '用户设定',
     link: 'systemsetting.users',
     roles: ['admin', 'worker'],
-    menu: 'main/systemsetting/one',
+    menu: 'main/systemsetting/two',
     name: 'users',
-
   });
 
   Systemsetting.menus.add({
     title: '查看日志',
     link: 'systemsetting.logs',
     roles: ['admin', 'worker'],
-    menu: 'main/systemsetting/one',
+    menu: 'main/systemsetting/two',
     name: 'logs'
   });
   

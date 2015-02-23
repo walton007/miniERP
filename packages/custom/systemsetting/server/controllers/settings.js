@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
   Mineral = mongoose.model('Mineral'),
   Quality = mongoose.model('Quality'),
+  Warehouse = mongoose.model('Warehouse'),
   _ = require('lodash');
 
 
@@ -128,17 +129,17 @@ exports.createQuality = function(req, res) {
  * Update an quality
  */
 exports.updateQuality = function(req, res) {
-  var article = req.article;
+  var quality = req.quality;
 
-  article = _.extend(article, req.body);
+  quality = _.extend(quality, {'comment': req.body.comment});
 
-  article.save(function(err) {
+  quality.save(function(err) {
     if (err) {
       return res.status(500).json({
-        error: 'Cannot update the article'
+        error: 'Cannot update the quality'
       });
     }
-    res.json(article);
+    res.json(quality);
 
   });
 };
@@ -148,7 +149,7 @@ exports.updateQuality = function(req, res) {
  */
 exports.destroyQuality = function(req, res) {
   var quality = req.quality;
-  quality.markDelete.then(
+  quality.markDelete().then(
     function() {
       res.json(quality);
     }, 
@@ -170,6 +171,91 @@ exports.allQualities = function(req, res) {
       });
     }
     res.json(qualities);
+
+  });
+};
+
+
+//Warehouse
+
+/**
+ * Find warehouse by id
+ */
+exports.warehouse = function(req, res, next, id) {
+  Warehouse.load(id, function(err, warehouse) {
+    if (err) return next(err);
+    if (!warehouse) return next(new Error('Failed to load warehouse ' + id));
+    req.warehouse = warehouse;
+    next();
+  });
+};
+
+/**
+ * Create an warehouse
+ */
+exports.createWarehouse = function(req, res) {
+  console.log('createWarehouse Quality req.body:',req.body);
+  var warehouse = new Warehouse(req.body);
+  warehouse.creator = req.user;
+
+  warehouse.save(function(err) {
+    if (err) {
+      console.error('save warehouse error:',err);
+      return res.status(500).json({
+        error: 'Cannot save the warehouse'
+      });
+    }
+    res.json(warehouse);
+
+  });
+};
+
+/**
+ * Update an warehouse
+ */
+exports.updateWarehouse = function(req, res) {
+  var warehouse = req.warehouse;
+
+  warehouse = _.extend(warehouse, {'comment': req.body.comment});
+
+  warehouse.save(function(err) {
+    if (err) {
+      return res.status(500).json({
+        error: 'Cannot update the warehouse'
+      });
+    }
+    res.json(warehouse);
+
+  });
+};
+
+/**
+ * Delete an warehouses
+ */
+exports.destroyWarehouse = function(req, res) {
+  var warehouse = req.warehouse;
+  warehouse.markDelete().then(
+    function() {
+      res.json(warehouse);
+    }, 
+    function() {
+      res.status(500).json({
+        error: 'Cannot delete the warehouse'
+      });
+    });
+};
+
+/**
+ * List of warehouses
+ */
+exports.allWarehouses = function(req, res) {
+  Warehouse.find({deleteFlag: false}).sort('-created').exec(function(err, warehouses) {
+    if (err) {
+      return res.status(500).json({
+        error: 'Cannot list the Warehouse'
+      });
+    }
+    res.json(warehouses);
 
   });
 };

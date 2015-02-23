@@ -19,9 +19,13 @@ angular.module('mean.systemsetting').config(function(stateHelperProvider) {
 			url: '/inventory',
 			templateUrl: 'systemsetting/views/inventory.html',
 		}, {
-			name: 'coals',
-			url: '/coals',
-			templateUrl: 'systemsetting/views/coals.html',
+			name: 'quality',
+			url: '/quality',
+			templateUrl: 'systemsetting/views/quality.html',
+		}, {
+			name: 'minerals',
+			url: '/minerals',
+			templateUrl: 'systemsetting/views/minerals.html',
 		}, {
 			name: 'users',
 			url: '/users',
@@ -30,6 +34,10 @@ angular.module('mean.systemsetting').config(function(stateHelperProvider) {
 			name: 'logs',
 			url: '/logs',
 			templateUrl: 'systemsetting/views/logs.html',
+		}, {
+			name: 'warehouses',
+			url: '/warehouses',
+			templateUrl: 'systemsetting/views/warehouses.html',
 		}]
 	});
 });

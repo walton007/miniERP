@@ -35,7 +35,7 @@ module.exports = function(Systemsetting, app, auth, database) {
   //coalquality
   app.route('/coalQualities')
     .get(settings.allQualities)
-    .post(auth.requiresLogin, getQuality, settings.createQuality);
+    .post(auth.requiresLogin, settings.createQuality);
 
   app.route('/coalQualities/:coalQualityId')
     // .put(auth.isMongoId, auth.requiresLogin, settings.updateQuality)
@@ -44,43 +44,15 @@ module.exports = function(Systemsetting, app, auth, database) {
   // Finish with setting up the articleId param
   app.param('coalQualityId', settings.coalquality);
 
+  //warehouses
+  app.route('/warehouses')
+    .get(settings.allWarehouses)
+    .post(auth.requiresLogin, settings.createWarehouse);
 
-  
+  app.route('/warehouses/:warehouseId')
+    // .put(auth.isMongoId, auth.requiresLogin, settings.updateQuality)
+    .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyWarehouse);
 
-  // app.get('/systemsetting/example/auth', auth.requiresLogin, function(req, res, next) {
-  //   res.send('Only authenticated users can access this');
-  // });
-
-  // app.get('/systemsetting/example/admin', auth.requiresAdmin, function(req, res, next) {
-  //   res.send('Only users with Admin role can access this');
-  // });
-
-  // app.get('/systemsetting/example/render', function(req, res, next) {
-  //   Systemsetting.render('index', {
-  //     package: 'systemsetting'
-  //   }, function(err, html) {
-  //     //Rendering a view from the Package server/views
-  //     res.send(html);
-  //   });
-  // });
+  // Finish with setting up the articleId param
+  app.param('warehouseId', settings.warehouse);
 };
-
-
-
-// 'use strict';
-
-// var articles = require('../controllers/articles');
-
-
-
-// module.exports = function(Articles, app, auth) {
-
-  
-//   app.route('/articles/:articleId')
-//     .get(auth.isMongoId, articles.show)
-//     .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, articles.update)
-//     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, articles.destroy);
-
-//   // Finish with setting up the articleId param
-//   app.param('articleId', articles.article);
-// };

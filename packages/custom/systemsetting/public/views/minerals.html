@@ -1,4 +1,4 @@
-<section data-ng-controller="SystemsettingController" data-ng-init="getInitData()">
+<section data-ng-controller="MineralSettingController" data-ng-init="getInitData()">
 	<script type="text/ng-template" id="OperationDialog.html">
 	<div class="modal-header" ng-init="init()">
 	  <h3>Operation - {{ Name }}</h3> 
@@ -10,14 +10,12 @@
 	</script>
 
 	<div data-ng-show="!minerals || minerals.length"> 
-		<h1>矿源列表</h1>
+		<div>矿源列表</div>
 		<div class="gridStyle" data-ng-grid="mineralGridOptions"></div>
 	</div>
     <h1 data-ng-hide="!minerals || minerals.length"> 还没有添加矿源？   <a href="/#!/articles/create">添加新的矿源</a></h1>
 
-    <div ng-click="tryopen()"> Let's open it</div>
-
-    <div> 	新增矿源 </div>\
+    <div> 	新增矿源 </div>
     <form name="addMineralForm" class="form-horizontal col-md-6" role="form" data-ng-submit="createMineral(addMineralForm.$valid)" novalidate>
 	    <div class="form-group" ng-class="{ 'has-error' : submitted && addMineralForm.name.$invalid }">
 	      <label  class="col-md-3 control-label">矿源名称</label>
@@ -55,36 +53,6 @@
 	      </div>
 	    </div>
 	  </form>
-
-
-    <div data-ng-show="!coalQualities || coalQualities.length"> 
-		<h1>媒质列表</h1>
-		<div class="gridStyle" data-ng-grid="qualityGridOptions"></div>
-	</div>
-	  <div> 新增媒质 </div>
-    <form name="addQualityForm" class="form-horizontal col-md-6" role="form" data-ng-submit="createQuality(addQualityForm.$valid)" novalidate>
-	    <div class="form-group" ng-class="{ 'has-error' : submitted && addQualityForm.name.$invalid }">
-	      <label  class="col-md-3 control-label">媒质名称</label>
-	      <div class="col-md-9">
-	        <input name="name" type="text" class="form-control" data-ng-model="qualityname"   placeholder="名称" required>
-	        <div ng-show="submitted && addQualityForm.name.$invalid" class="help-block">
-	          <p ng-show="addQualityForm.name.$error.required">请输入媒质名称</p>
-	        </div>
-	      </div>
-	    </div>
-
-	    <div class="form-group" ng-class="{ 'has-error' : submitted && addQualityForm.comment.$invalid }">
-	      <label for="comment" class="col-md-3 control-label">备注</label>
-	      <div class="col-md-9">
-	        <textarea name="comment" data-ng-model="qualitycomment"   cols="30" rows="3" placeholder="" class="form-control"> </textarea>
-	      </div>
-	    </div>
-
-	    <div class="form-group">
-	      <div class="col-md-offset-3 col-md-9">
-	        <button type="submit" class="btn btn-info">添加</button>
-	      </div>
-	    </div>
-	  </form>
+     
 </section>
 

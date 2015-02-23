@@ -64,6 +64,12 @@ var WarehouseSchema = BaseSchema.extend({
   comment: String,
 });
 
+WarehouseSchema.statics.load = function(id, cb) {
+  this.findOne({
+    _id: id
+  }).exec(cb);
+};
+
 mongoose.model('Warehouse', WarehouseSchema);
 
 var BinlocationSchema = BaseSchema.extend({
