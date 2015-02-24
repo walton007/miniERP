@@ -30,10 +30,11 @@ Systemsetting.register(function(app, auth, database) {
   //////////////////////////////////
   Systemsetting.menus.add({
     title: '基础数据设置',
-    link: 'systemsetting.inventory',
+    link: 'systemsetting.warehouses',
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting',
     name: 'one',  
+    isdefault : true,
   });
 
   Systemsetting.menus.add({
@@ -42,7 +43,6 @@ Systemsetting.register(function(app, auth, database) {
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
     name: 'quality',
-    isdefault : true,
   });
 
   Systemsetting.menus.add({
@@ -51,7 +51,6 @@ Systemsetting.register(function(app, auth, database) {
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
     name: 'warehouse',
-    isdefault : true,
   });
 
   Systemsetting.menus.add({
@@ -64,10 +63,10 @@ Systemsetting.register(function(app, auth, database) {
 
   Systemsetting.menus.add({
     title: '煤堆设定',
-    link: 'systemsetting.inventory',
+    link: 'systemsetting.binlocation',
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
-    name: 'inventory',
+    name: 'binlocation',
   });
 
   //////////////////////////////////

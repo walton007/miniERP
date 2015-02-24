@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
   Mineral = mongoose.model('Mineral'),
   Quality = mongoose.model('Quality'),
   Warehouse = mongoose.model('Warehouse'),
+  Binlocation = mongoose.model('Binlocation'),
   _ = require('lodash');
 
 
@@ -97,6 +98,7 @@ exports.allMinerals = function(req, res) {
  * Find quality by id
  */
 exports.coalquality = function(req, res, next, id) {
+  console.log('load quality id:',id);
   Quality.load(id, function(err, quality) {
     if (err) return next(err);
     if (!quality) return next(new Error('Failed to load quality ' + id));
@@ -149,6 +151,8 @@ exports.updateQuality = function(req, res) {
  */
 exports.destroyQuality = function(req, res) {
   var quality = req.quality;
+  console.log('destroyQuality quality:', quality);
+  
   quality.markDelete().then(
     function() {
       res.json(quality);
@@ -258,4 +262,90 @@ exports.allWarehouses = function(req, res) {
     res.json(warehouses);
 
   });
+};
+
+
+//binlocation
+
+/**
+ * Find binlocation by id
+ */
+exports.bin = function(req, res, next, id) {
+  Binlocation.load(id, function(err, binlocation) {
+    if (err) return next(err);
+    if (!binlocation) return next(new Error('Failed to load binlocation ' + id));
+    req.bin = bin;
+    next();
+  });
+};
+
+/**
+ * Create an binlocation
+ */
+exports.createBin = function(req, res) {
+  console.log('createBin req.body:',req.body);
+  var bin = new Binlocation(req.body);
+  bin.creator = req.user;
+  bin.warehouse = req.warehouse;
+  bin.warehouseName = req.warehouse.name;
+
+  bin.save(function(err) {
+    if (err) {
+      console.error('save binlocation error:',err);
+      return res.status(500).json({
+        error: 'Cannot save the binlocation'
+      });
+    }
+    res.json(bin);
+  });
+};
+
+/**
+ * Update a binlocation
+ */
+exports.updateBin = function(req, res) {
+  var bin = req.bin;
+
+  // warehouse = _.extend(warehouse, {'comment': req.body.comment});
+
+  // warehouse.save(function(err) {
+  //   if (err) {
+  //     return res.status(500).json({
+  //       error: 'Cannot update the warehouse'
+  //     });
+  //   }
+  //   res.json(warehouse);
+
+  // });
+};
+
+/**
+ * Delete an binlocation
+ */
+exports.destroyBin = function(req, res) {
+  var bin = req.bin;
+  bin.markDelete().then(
+    function() {
+      res.json(bin);
+    }, 
+    function() {
+      res.status(500).json({
+        error: 'Cannot delete the bin'
+      });
+    });
+};
+
+/**
+ * List of binlocation
+ */
+exports.allBins = function(req, res) {
+  Binlocation.getAllBinList().then(
+    function(bins) {
+      res.json(bins);
+    },
+    function(err) {
+      return res.status(500).json({
+        error: err
+      });
+    });
 };

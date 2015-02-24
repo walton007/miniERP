@@ -142,6 +142,25 @@ BinlocationSchema.static('updateBinManually',
   }
 );
 
+BinlocationSchema.statics.load = function(id, cb) {
+  this.findOne({
+    _id: id
+  }, function(err, bin) {
+    if (err) {
+      cb(err);
+      return;
+    }
+    var deferred = bin.getInventoryInfo();
+    deferred.then(
+      function(retBin) {
+        cb(0, retBin);
+      }, 
+      function(err) {
+        cb(err);
+      });
+  });
+};
+
 BinlocationSchema.static('getAllBinList',
   function() {
     // console.log('getBinList');

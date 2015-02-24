@@ -15,9 +15,9 @@ angular.module('mean.systemsetting').config(function(stateHelperProvider) {
 		url: '/systemsetting',
 		templateUrl: 'systemsetting/views/index.html',
 		children: [{
-			name: 'inventory',
-			url: '/inventory',
-			templateUrl: 'systemsetting/views/inventory.html',
+			name: 'binlocation',
+			url: '/binlocation',
+			templateUrl: 'systemsetting/views/binlocation.html',
 		}, {
 			name: 'quality',
 			url: '/quality',
