@@ -116,6 +116,8 @@ BinlocationSchema.static('updateBinManually',
       'warehouseName': oldBin.warehouseName,
       'warehouse': oldBin.warehouse,
     });
+    delete newVal['_id'];
+    console.log('newVal:', newVal);
     var newBin = new Binlocation(newVal);
 
     //Change oldBin to be history record
@@ -146,6 +148,7 @@ BinlocationSchema.statics.load = function(id, cb) {
   this.findOne({
     _id: id
   }, function(err, bin) {
+    console.log('err:',err, bin);
     if (err) {
       cb(err);
       return;
@@ -153,6 +156,7 @@ BinlocationSchema.statics.load = function(id, cb) {
     var deferred = bin.getInventoryInfo();
     deferred.then(
       function(retBin) {
+        console.log(16);
         cb(0, retBin);
       }, 
       function(err) {
@@ -194,6 +198,7 @@ BinlocationSchema.static('getAllBinList',
 
 BinlocationSchema.method('getInventoryInfo',
   function() {
+    console.log(11);
     var deferred = Q.defer();
 
     var now = new Date();
@@ -210,6 +215,8 @@ BinlocationSchema.method('getInventoryInfo',
         bin: that,
       }).where('receiveDate').gt(this.modified).sort('receiveDate')
       .exec(function(err, goodReceipts) {
+        console.log(12);
+
         if (err) {
           deferred.reject(err);
           return;
@@ -222,12 +229,17 @@ BinlocationSchema.method('getInventoryInfo',
             status: 'checked',
           }).where('issueDate').gt(that.modified).sort('issueDate')
           .exec(function(err, goodIssues) {
+            console.log(13);
             if (err) {
               deferred.reject(err);
               return;
             }
 
+            console.log(14);
+
             var updateObj = that._caculate(goodReceipts, goodIssues);
+
+            console.log(15);
             deferred.resolve(updateObj);
             return;
           });

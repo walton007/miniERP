@@ -6,7 +6,7 @@
     },
     "js": {
       "bower_components/build/js/dist.min.js": [
-        "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/jquery/dist/jquery.js",
         "bower_components/angular/angular.js",
         "bower_components/angular-mocks/angular-mocks.js",
         "bower_components/angular-cookies/angular-cookies.js",
@@ -14,7 +14,10 @@
         "bower_components/angular-ui-router/release/angular-ui-router.js",
         "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js",
         "bower_components/angular-ui-router.stateHelper/stateHelper.min.js",
-        "bower_components/ng-grid/build/ng-grid.debug.js"
+        "bower_components/ng-grid/build/ng-grid.min.js",
+        "bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "bower_components/bootbox/bootbox.js",
+        "bower_components/ngBootbox/dist/ngBootbox.min.js"
       ]
     }
   }

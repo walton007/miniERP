@@ -271,10 +271,24 @@ exports.allWarehouses = function(req, res) {
  * Find binlocation by id
  */
 exports.bin = function(req, res, next, id) {
+  // console.log('get bin id:', id);
   Binlocation.load(id, function(err, binlocation) {
-    if (err) return next(err);
-    if (!binlocation) return next(new Error('Failed to load binlocation ' + id));
-    req.bin = bin;
+    // console.log(17,binlocation);
+    if (err) {
+      console.error('load bin err:',err);
+      return res.status(500).json({
+        error: err
+      });
+    }
+    console.log(18);
+    if (!binlocation) {
+      console.error('binlocation is null:',err);
+      return res.status(500).json({
+        error: 'failed to find binlocation'
+      });
+    } 
+    req.bin = binlocation;
+    console.log(19);
     next();
   });
 };
@@ -304,19 +318,25 @@ exports.createBin = function(req, res) {
  * Update a binlocation
  */
 exports.updateBin = function(req, res) {
-  var bin = req.bin;
+  console.log('updateBin');
+  var oldBin = req.bin;
+  var newBinVal = _.extend(req.body, {
+    creator: req.user,
+    creatorName: req.user.name
+  });
 
-  // warehouse = _.extend(warehouse, {'comment': req.body.comment});
+  console.log('updateBin 1 newBinVal:', newBinVal);
 
-  // warehouse.save(function(err) {
-  //   if (err) {
-  //     return res.status(500).json({
-  //       error: 'Cannot update the warehouse'
-  //     });
-  //   }
-  //   res.json(warehouse);
-
-  // });
+  var q = Binlocation.updateBinManually(oldBin, newBinVal);
+  q.then(function(newBin) {
+    console.log('finish updateBinManually');
+    res.json(newBin); 
+  }, function(err) {
+    console.error('updateBin error:', err);
+    return res.status(500).json({
+        error: 'Cannot save the binlocation'
+      });
+  });
 };
 
 /**

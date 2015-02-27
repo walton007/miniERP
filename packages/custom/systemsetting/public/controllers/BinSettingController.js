@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('mean.systemsetting').controller('BinSettingController', ['$scope', 'Systemsetting',
+angular.module('mean.systemsetting').controller('BinSettingController', ['$scope', '$log', 'Systemsetting',
   'Bins', 'Warehouses', '$modal',
-  function($scope, Systemsetting, Bins, Warehouses, $modal) {
+  function($scope, $log, Systemsetting, Bins, Warehouses, $modal) {
     $scope.getInitData = function() {
       $scope.bins = [];
       Bins.query(function(bins) {
@@ -16,7 +16,9 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
         };
       });
     };
- 
+
+    $scope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
+
     $scope.gridOptions = {
       data: 'bins',
       multiSelect: false,
@@ -41,7 +43,7 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
       }, {
         field: '',
         width: 'auto',
-        cellTemplate: '<button class="btn btn-danger" ng-click="delete()"><i class="glyphicon glyphicon-trash"></i></button>'
+        cellTemplate: '<button class="btn btn-info" ng-click="openEditDialog()"><i class="glyphicon glyphicon-edit"></i></button>'
       }]
     };
 
@@ -54,6 +56,32 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
       });
     };
 
+    $scope.openEditDialog = function() {
+      var obj = this.row.entity;
+      var rowIndex = this.row.rowIndex
+      var modalInstance = $modal.open({
+        templateUrl: 'EditBinDialog.html',
+        controller: 'EditBinController',
+        size: 'lg',
+        resolve: {
+          editBin: function() {
+            return angular.copy(obj);
+          },
+          warehouses: function() {
+            return angular.copy($scope.warehouses);
+          },
+          $modal: function() {
+            return $modal;
+          }
+        }
+      });
+      modalInstance.result.then(function(updateBin) {
+        angular.extend($scope.bins[rowIndex], updateBin);
+      }, function() {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    }
+
     $scope.$on('ngGridEventEndCellEdit', function(evt) {
       // Detect changes and send entity to REST server
       // console.log('evt.targetScope.row.entity:', evt.targetScope.row.entity);
@@ -64,7 +92,6 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
     });
 
     $scope.create = function(isValid) {
-
       if (isValid) {
         var obj = new Bins({
           name: this.name,
@@ -86,27 +113,51 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
         $scope.submitted = true;
       }
     };
-
-
-    // $scope.tryopen = function() {
-    //   // $modal.open();
-    //   $modal.open({
-    //     templateUrl: 'OperationDialog.html',
-    //     controller: 'C_add_Warn',
-    //     resolve: {
-    //       header: function() {
-    //         return angular.copy('新增');
-    //       },
-    //       msg: function() {
-    //         return angular.copy('这是消息');
-    //       }
-    //     }
-    //   });
-    // };
   }
-]);
+]).controller('EditBinController', function($scope, $modalInstance, editBin, warehouses, $modal) {
 
-// .controller('C_add_Warn', function($scope, header, msg) {
-//   $scope.header = header;
-//   $scope.msg = msg;
-// });
+
+  $scope.warehouses = warehouses;
+  for (var i = warehouses.length - 1; i >= 0; i--) {
+    if (warehouses[i]._id === editBin.warehouse) {
+      $scope.warehouseSelected = warehouses[i];
+      break;
+    }
+  };
+
+  $scope.editBin = editBin;
+  $scope.updateBin = function(isValid) {
+    if (isValid) {
+      var confirmParam = {
+        message: "你确定更新煤堆信息吗？老的数据不会再保留！",
+        buttons: {
+          confirm: {
+            label: "更新",
+          },
+
+          cancel: {
+            label: "取消",
+          },
+        },
+        callback: function(confirm) {
+          if (confirm) {
+            $scope.editBin.$update(function(updateBinObj) {
+              // console.log('updateBinObj:', updateBinObj);
+              $modalInstance.close(updateBinObj);
+            });
+          } else {
+            $modalInstance.dismiss();
+          }
+        }
+      };
+
+      bootbox.confirm(confirmParam);
+    } else {
+      $scope.submitted = true;
+    }
+  };
+  $scope.dismisse = function() {
+    $modalInstance.dismiss();
+  }
+
+});

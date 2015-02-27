@@ -25,6 +25,11 @@ var getWarehouse = function(req, res, next) {
   settings.warehouse(req, res, next, req.body.warehouseId);
 };
 
+var consoleRequest = function(req, res, next) {
+  console.log('consoleRequest ');
+  next();
+};
+
 // The Package is past automatically as first parameter
 module.exports = function(Systemsetting, app, auth, database) {
   app.route('/minerals')
@@ -68,7 +73,7 @@ module.exports = function(Systemsetting, app, auth, database) {
     .post(auth.requiresLogin, getWarehouse, settings.createBin);
 
   app.route('/bins/:binId')
-    .put(auth.isMongoId, auth.requiresLogin, settings.updateBin)
+    .put(consoleRequest,  settings.updateBin)
     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyBin);
 
   // Finish with setting up the binId param

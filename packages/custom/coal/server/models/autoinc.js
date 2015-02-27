@@ -56,16 +56,20 @@
      model: options.model,
      field: options.field
    }, function(err, res) {
-     if (!res)
-       (new Counter({
+    console.log('Counter.findOne--err, res:', err, res);
+     if (!res) {
+      (new Counter({
          model: options.model,
          field: options.field,
          seq: options.start
        })).save(function() {
          ready = true;
        });
-     else
-       ready = true;
+     } else {
+      ready = true;
+      console.log('ready is true');
+     }
+       
    });
 
    schema.pre('save', function(next) {

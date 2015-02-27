@@ -30,7 +30,7 @@ Systemsetting.register(function(app, auth, database) {
   //////////////////////////////////
   Systemsetting.menus.add({
     title: '基础数据设置',
-    link: 'systemsetting.warehouses',
+    link: 'systemsetting.binlocation',
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting',
     name: 'one',  

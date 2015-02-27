@@ -1,14 +1,4 @@
 <section data-ng-controller="MineralSettingController" data-ng-init="getInitData()">
-	<script type="text/ng-template" id="OperationDialog.html">
-	<div class="modal-header" ng-init="init()">
-	  <h3>Operation - {{ Name }}</h3> 
-	</div>
-	<div class="modal-body">
-	 <input type="checkbox" name="my-checkbox" checked>  
-	</div>
-	<div class="modal-footer"></div>
-	</script>
-
 	<div data-ng-show="!minerals || minerals.length"> 
 		<div>矿源列表</div>
 		<div class="gridStyle" data-ng-grid="mineralGridOptions"></div>
