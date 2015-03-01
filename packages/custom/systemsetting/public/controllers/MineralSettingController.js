@@ -76,27 +76,5 @@ angular.module('mean.systemsetting').controller('MineralSettingController', ['$s
         $scope.submitted = true;
       }
     };
-
-
-    // $scope.tryopen = function() {
-    //   // $modal.open();
-    //   $modal.open({
-    //     templateUrl: 'OperationDialog.html',
-    //     controller: 'C_add_Warn',
-    //     resolve: {
-    //       header: function() {
-    //         return angular.copy('新增');
-    //       },
-    //       msg: function() {
-    //         return angular.copy('这是消息');
-    //       }
-    //     }
-    //   });
-    // };
   }
 ]);
-
-// .controller('C_add_Warn', function($scope, header, msg) {
-//   $scope.header = header;
-//   $scope.msg = msg;
-// });

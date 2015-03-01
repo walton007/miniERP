@@ -33,7 +33,7 @@ angular.module('mean.systemsetting').config(function(stateHelperProvider) {
 		}, {
 			name: 'logs',
 			url: '/logs',
-			templateUrl: 'systemsetting/views/logs.html',
+			templateUrl: 'systemsetting/views/changelog.html',
 		}, {
 			name: 'warehouses',
 			url: '/warehouses',

@@ -69,54 +69,61 @@
 			<h3 class="modal-title">重置煤堆信息</h3>
 	</div>
 	<div class="modal-body">
-			<div style="height:300px">
+			<div style="height:400px">
 				<form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="updateBin(addForm.$valid)" novalidate>
 						
-						<div class="form-group">
-								<label  class="col-md-3 control-label"> 所属矿场</label>
-								<div class="col-md-9">
-											<select name="warehouse" class="form-control" ng-model="warehouseSelected"
-											ng-options="opt as opt.name for opt in warehouses" required >
-										</select>
-										<div ng-show="submitted && addForm.warehouse.$invalid" class="help-block">
-													<p ng-show="addForm.warehouse.$error.required">请选择所属矿场</p>
-											</div>
-								</div>
-									
-						</div>
-						<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.weight.$invalid }">
-								<label  class="col-md-3 control-label"> 重量</label>
-								<div class="col-md-9">
-										<input name="weight" type="text" class="form-control" data-ng-model="editBin.weight"  required>
-										<div ng-show="submitted && addForm.weight.$invalid" class="help-block">
-												<p ng-show="addForm.weight.$error.required">请输入煤堆重量</p>
+					<div class="form-group">
+							<label  class="col-md-3 control-label"> 所属矿场</label>
+							<div class="col-md-9">
+										<select name="warehouse" class="form-control" ng-model="warehouseSelected"
+										ng-options="opt as opt.name for opt in warehouses" required >
+									</select>
+									<div ng-show="submitted && addForm.warehouse.$invalid" class="help-block">
+												<p ng-show="addForm.warehouse.$error.required">请选择所属矿场</p>
 										</div>
+							</div>
+								
+					</div>
+					<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.weight.$invalid }">
+							<label  class="col-md-3 control-label"> 重量</label>
+							<div class="col-md-9">
+								<input name="weight" type="text" class="form-control" data-ng-model="editBin.weight" ng-pattern="numberPattern" required>
+								<div ng-show="submitted && addForm.weight.$invalid" class="help-block">
+										<p ng-show="addForm.weight.$error.required">请输入煤堆重量</p>
 								</div>
+							</div>
+					</div>
+					<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.power.$invalid }">
+							<label  class="col-md-3 control-label"> 热值</label>
+							<div class="col-md-9">
+									<input name="power" type="text" class="form-control" data-ng-model="editBin.chemicalAttrs.power" ng-pattern="numberPattern" required>
+									<div ng-show="submitted && addForm.power.$invalid" class="help-block">
+											<p ng-show="addForm.power.$error.required">请输入热值</p>
+									</div>
+							</div>
+					</div>
+					<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.nitrogen.$invalid }">
+						<label  class="col-md-3 control-label"> nitrogen值</label>
+						<div class="col-md-9">
+							<input name="nitrogen" type="text" class="form-control" data-ng-model="editBin.chemicalAttrs.nitrogen" ng-pattern="numberPattern" required>
+							<div ng-show="submitted && addForm.nitrogen.$invalid" class="help-block">
+									<p ng-show="addForm.nitrogen.$error.required">请输入nitrogen值</p>
+							</div>
 						</div>
-						<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.power.$invalid }">
-								<label  class="col-md-3 control-label"> 热值</label>
-								<div class="col-md-9">
-										<input name="power" type="text" class="form-control" data-ng-model="editBin.chemicalAttrs.power" placeholder="" required>
-										<div ng-show="submitted && addForm.power.$invalid" class="help-block">
-												<p ng-show="addForm.power.$error.required">请输入热值</p>
-										</div>
-								</div>
-						</div>
-						<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.nitrogen.$invalid }">
-								<label  class="col-md-3 control-label"> nitrogen值</label>
-								<div class="col-md-9">
-										<input name="nitrogen" type="text" class="form-control" data-ng-model="editBin.chemicalAttrs.nitrogen" placeholder="" required>
-										<div ng-show="submitted && addForm.nitrogen.$invalid" class="help-block">
-												<p ng-show="addForm.nitrogen.$error.required">请输入nitrogen值</p>
-										</div>
-								</div>
-						</div>
-						<div class="form-group">
-								<div class="col-md-offset-3 col-md-9">
-										<button type="submit" class="btn btn-info">添加</button>
-								</div>
-						</div>
-				</form>
-			</div>
+					</div>
+					<div class="form-group">
+				      <label for="comment" class="col-md-3 control-label">变更备注</label>
+				      <div class="col-md-9">
+				        <textarea name="comment" data-ng-model="editBin.comment" cols="30" rows="3" placeholder="" class="form-control"> </textarea>
+				      </div>
+				    </div>
+
+					<div class="form-group">
+							<div class="col-md-offset-3 col-md-9">
+									<button type="submit" class="btn btn-info">添加</button>
+							</div>
+					</div>
+			</form>
+		</div>
 	</div> 
 </script>

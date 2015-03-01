@@ -369,3 +369,31 @@ exports.allBins = function(req, res) {
       });
     });
 };
+
+/**
+ * List of binChangelogs
+ */
+exports.binChangelogs = function(req, res) {
+  var pageNumber = req.query.pageNumber;
+  var pageSize = req.query.pageSize; 
+  Binlocation.getBinChangelogs(pageNumber, pageSize,
+     function(error, pageCount, paginatedResults, itemCount) {
+      if (error) {
+        console.error(error);
+        res.status(500).json({
+          error: err
+        });
+      } else {
+        res.json({
+          pageCount: pageCount,
+          paginatedResults: paginatedResults,
+          itemCount: itemCount
+        });
+        console.log('Pages:', pageCount);
+        console.log('itemCount:', itemCount);
+        // console.log(paginatedResults);
+      }
+    });
+};
+
+

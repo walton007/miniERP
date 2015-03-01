@@ -82,15 +82,6 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
       });
     }
 
-    $scope.$on('ngGridEventEndCellEdit', function(evt) {
-      // Detect changes and send entity to REST server
-      // console.log('evt.targetScope.row.entity:', evt.targetScope.row.entity);
-      var mineral = evt.targetScope.row.entity;
-      mineral.$update(function() {
-        // $location.path('articles/' + article._id);
-      });
-    });
-
     $scope.create = function(isValid) {
       if (isValid) {
         var obj = new Bins({
@@ -108,6 +99,8 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
           $scope.weight = '';
           $scope.power = '';
           $scope.nitrogen = '';
+        }, function(errObj) {
+          bootbox.alert('创建失败！错误原因：'+ errObj.data.error);
         });
       } else {
         $scope.submitted = true;
@@ -125,33 +118,24 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
     }
   };
 
-  $scope.editBin = editBin;
+  $scope.editBin =   $.extend(editBin, {comment: ''});
+  $scope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
+  
   $scope.updateBin = function(isValid) {
     if (isValid) {
-      var confirmParam = {
-        message: "你确定更新煤堆信息吗？老的数据不会再保留！",
-        buttons: {
-          confirm: {
-            label: "更新",
-          },
-
-          cancel: {
-            label: "取消",
-          },
-        },
-        callback: function(confirm) {
+      bootbox.confirm("你确定更新煤堆信息吗？老的数据不会再保留！", 
+        function(confirm) {
           if (confirm) {
             $scope.editBin.$update(function(updateBinObj) {
               // console.log('updateBinObj:', updateBinObj);
               $modalInstance.close(updateBinObj);
+            }, function(errObj) {
+              bootbox.alert('更新失败！错误原因：'+ errObj.data.error);
             });
           } else {
             $modalInstance.dismiss();
           }
-        }
-      };
-
-      bootbox.confirm(confirmParam);
+        });
     } else {
       $scope.submitted = true;
     }

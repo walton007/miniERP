@@ -19,6 +19,10 @@ angular.module('mean.systemsetting').controller('QualitySettingController', ['$s
             var obj = evt.targetScope.row.entity;
             obj.$update(function() {
               // $location.path('articles/' + article._id);
+            }, function(errResp) {
+              console.warn(errResp);
+              alert('errResp', errResp);
+
             });
          });
 

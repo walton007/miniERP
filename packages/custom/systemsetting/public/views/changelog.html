@@ -1,0 +1,13 @@
+<section data-ng-controller="ChangelogController" data-ng-init="getInitData()">
+    <div data-ng-show="!binChangelogs || binChangelogs.length"> 
+		<div>煤堆修改记录</div>
+		<div class="gridStyle" data-ng-grid="binChangelogGridOptions"></div>
+	</div>
+
+	<div data-ng-hide="!binChangelogs || binChangelogs.length"> 
+		<div>没有修改记录</div> 
+	</div>
+
+	  
+</section>
+

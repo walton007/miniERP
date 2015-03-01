@@ -73,9 +73,13 @@ module.exports = function(Systemsetting, app, auth, database) {
     .post(auth.requiresLogin, getWarehouse, settings.createBin);
 
   app.route('/bins/:binId')
-    .put(consoleRequest,  settings.updateBin)
+    .put(auth.isMongoId, auth.requiresLogin, settings.updateBin)
     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyBin);
 
   // Finish with setting up the binId param
   app.param('binId', settings.bin);
+
+  // binChangelogs
+  app.route('/binChangelogs')
+    .get(settings.binChangelogs);
 };

@@ -56,7 +56,7 @@
      model: options.model,
      field: options.field
    }, function(err, res) {
-    console.log('Counter.findOne--err, res:', err, res);
+    // console.log('Counter.findOne--err, res:', err, res);
      if (!res) {
       (new Counter({
          model: options.model,

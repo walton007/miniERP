@@ -10,6 +10,7 @@ var mongoose = require('mongoose'),
   Q = require('q'),
   _ = require('lodash'),
   math = require('mathjs'),
+  mongoosePaginate = require('mongoose-paginate'),
   commonUtil = require('./commonUtil');
 
 var BaseSchema = commonUtil.BaseSchema;
@@ -96,14 +97,20 @@ var BinlocationSchema = BaseSchema.extend({
     ref: 'Binlocation'
   },
 
+  comment: {
+    type: String,
+    trim: true,
+  },
+
   status: {
     type: String,
     required: true,
     default: 'new',
-    enum: ['new', 'historyPre', 'historyPost'],
-  },
-
+    enum: ['new', 'inherit', 'historyPre', 'historyPost'],
+  }
 });
+
+BinlocationSchema.plugin(mongoosePaginate);
 
 BinlocationSchema.static('updateBinManually',
   function(oldBin, newVal) {
@@ -115,9 +122,11 @@ BinlocationSchema.static('updateBinManually',
       'name': oldBin.name,
       'warehouseName': oldBin.warehouseName,
       'warehouse': oldBin.warehouse,
+      'status': 'inherit',
+      'created': oldBin.created
     });
     delete newVal['_id'];
-    console.log('newVal:', newVal);
+    // console.log('newVal:', newVal);
     var newBin = new Binlocation(newVal);
 
     //Change oldBin to be history record
@@ -130,16 +139,23 @@ BinlocationSchema.static('updateBinManually',
 
     var deferred = Q.defer();
 
+    newBin.save(function(err, obj) {
+      if (err) {
+        console.error('save new binlocation error:',err);
+        deferred.reject('save new binlocation error');
+        return;
+      }
 
-    Q.all([Q.ninvoke(newBin, 'save'), Q.ninvoke(oldBin, 'save'), Q.ninvoke(historyPostBin, 'save')])
+      Q.all([Q.ninvoke(oldBin, 'save'), Q.ninvoke(historyPostBin, 'save')])
       .then(function(results) {
-        // console.log('results:', results);
-        deferred.resolve(newBin);
-
+        deferred.resolve(obj);
       }, function(err) {
         console.log('err:', err);
         deferred.reject('failed to updateBinManually');
       });
+      
+    });
+
     return deferred.promise;
   }
 );
@@ -165,16 +181,27 @@ BinlocationSchema.statics.load = function(id, cb) {
   });
 };
 
+BinlocationSchema.static('getBinChangelogs', 
+  function(pageNumber, resultsPerPage, callback) {
+    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+
+    Binlocation.paginate({deleteFlag: false, 'status': 'historyPost'}, 
+      pageNumber, resultsPerPage, callback, {populate: 'prevBin'});
+    
+  }
+);
+
 BinlocationSchema.static('getAllBinList',
   function() {
     // console.log('getBinList');
     var deferred = Q.defer();
-
     var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
     var p = Binlocation.find({
-      status: 'new'
-    }).exec();
+      deleteFlag: false
+    }).where('status').in(['new', 'inherit']).sort('-created').exec();
+
     p.addCallback(function(binList) {
+      console.log('find binList:', binList);
       //getInventoryInfo 
       var deferArr = [];
       for (var i = binList.length - 1; i >= 0; --i) {
@@ -365,4 +392,26 @@ BinlocationSchema.method('updateSnapshot',
   }
 );
 
-mongoose.model('Binlocation', BinlocationSchema);
+BinlocationSchema.pre('save', function(next) {
+  //prevent name duplication (same name and same warehouse)
+
+  if (this.isNew && this.status === 'new') {
+    // console.log('update modified date');
+    Binlocation.find({status: 'new', name: this.name, warehouse: this.warehouse})
+      .count(function(err, count) {
+        if (err) {
+          next(new Error('database error'));
+          return;
+        }
+        if (count > 0) {
+          next(new Error('duplicateNameError'));
+          return;
+        };
+        next();
+      }) 
+  } else {
+    next();
+  }
+});
+
+var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
