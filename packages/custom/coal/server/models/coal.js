@@ -186,8 +186,8 @@ BinlocationSchema.static('getBinChangelogs',
     var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
 
     Binlocation.paginate({deleteFlag: false, 'status': 'historyPost'}, 
-      pageNumber, resultsPerPage, callback, {populate: 'prevBin'});
-    
+      pageNumber, resultsPerPage, callback, {populate: 'prevBin', sortBy:'-created'});
+
   }
 );
 

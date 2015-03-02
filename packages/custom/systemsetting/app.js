@@ -63,7 +63,7 @@ Systemsetting.register(function(app, auth, database) {
 
   Systemsetting.menus.add({
     title: '煤堆设定',
-    link: 'systemsetting.binlocation',
+    link: 'systemsetting.logs',
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
     name: 'binlocation',

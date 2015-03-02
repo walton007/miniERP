@@ -11,6 +11,14 @@ angular.module('mean.systemsetting').controller('ChangelogController', ['$scope'
         }); 
     };
 
+    function getCellTemplate(field) {
+      var changeFlag = 'row.entity.prevBin.FIELD !== row.entity.FIELD';
+      var cellTemplate = "<div class = 'text-info' > <span data-ng-show='changeFlag'>{{row.entity.prevBin.FIELD}} /</span> <span ng-class='{\"text-danger\": changeFlag}'> {{row.entity.FIELD}} </span> </div>".replace(/changeFlag/g, changeFlag);
+      return cellTemplate.replace(/FIELD/g, field);
+
+        "data-ng-show";
+    };
+
     $scope.getInitData = function() {
       $scope.binChangelogs = [];
       getPagedDataAsync();
@@ -42,25 +50,27 @@ angular.module('mean.systemsetting').controller('ChangelogController', ['$scope'
         displayName: '煤堆名称',
         width: '120',
       }, {
+        field: 'created',
+        displayName: '修改时间',
+        width: '180'
+      }, {
         field: 'warehouseName',
         displayName: '所属煤场'
       }, {
         field: 'comment',
         displayName: '备注'
       }, {
-        field: 'weight',
-        displayName: '重量'
+        displayName: '重量',
+        width: '120',
+        cellTemplate: getCellTemplate('weight')
       }, {
-        field: 'chemicalAttrs.power',
-        displayName: '热值'
+        displayName: '热值',
+        width: '120',
+        cellTemplate: getCellTemplate('chemicalAttrs.power')
       }, {
-        field: 'chemicalAttrs.nitrogen',
         displayName: 'nitrogen值',
-        width: '100',
-      }, {
-        field: '',
-        width: 'auto',
-        cellTemplate: '<button class="btn btn-info"><i class="glyphicon glyphicon-edit"></i></button>'
+        width: '120',
+        cellTemplate: getCellTemplate('chemicalAttrs.nitrogen')
       }]
     };
 
