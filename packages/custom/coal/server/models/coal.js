@@ -115,7 +115,7 @@ BinlocationSchema.plugin(mongoosePaginate);
 BinlocationSchema.static('updateBinManually',
   function(oldBin, newVal) {
     console.log('oldbin, newVal');
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+    var Binlocation = mongoose.model('Binlocation');
 
     //Create a new record to mark as current binlocation inventory
     _.extend(newVal, {
@@ -183,7 +183,7 @@ BinlocationSchema.statics.load = function(id, cb) {
 
 BinlocationSchema.static('getBinChangelogs', 
   function(pageNumber, resultsPerPage, callback) {
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+    var Binlocation = mongoose.model('Binlocation');
 
     Binlocation.paginate({deleteFlag: false, 'status': 'historyPost'}, 
       pageNumber, resultsPerPage, callback, {populate: 'prevBin', sortBy:'-created'});
@@ -195,7 +195,7 @@ BinlocationSchema.static('getAllBinList',
   function() {
     // console.log('getBinList');
     var deferred = Q.defer();
-    var Binlocation = mongoose.model('Binlocation', BinlocationSchema);
+    var Binlocation = mongoose.model('Binlocation');
     var p = Binlocation.find({
       deleteFlag: false
     }).where('status').in(['new', 'inherit']).sort('-created').exec();
@@ -220,6 +220,18 @@ BinlocationSchema.static('getAllBinList',
     });
 
     return deferred.promise;
+  }
+);
+
+BinlocationSchema.static('getBinBasicInfoList',
+  function(cb) {
+    var Binlocation = mongoose.model('Binlocation');
+    Binlocation.find({
+      deleteFlag: false
+    })
+    .select('_id name')
+    .where('status').in(['new', 'inherit'])
+    .sort('-created').exec(cb);
   }
 );
 

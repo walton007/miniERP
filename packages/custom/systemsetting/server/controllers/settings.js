@@ -12,18 +12,6 @@ var mongoose = require('mongoose'),
 
 
 /**
- * Find mineral by id
- */
-exports.mineral = function(req, res, next, id) {
-  Mineral.load(id, function(err, mineral) {
-    if (err) return next(err);
-    if (!mineral) return next(new Error('Failed to load mineral ' + id));
-    req.mineral = mineral;
-    next();
-  });
-};
-
-/**
  * Create an mineral
  */
 exports.createMineral = function(req, res) {
@@ -90,20 +78,6 @@ exports.allMinerals = function(req, res) {
     }
     res.json(minerals);
 
-  });
-};
-
-
-/**
- * Find quality by id
- */
-exports.coalquality = function(req, res, next, id) {
-  console.log('load quality id:',id);
-  Quality.load(id, function(err, quality) {
-    if (err) return next(err);
-    if (!quality) return next(new Error('Failed to load quality ' + id));
-    req.quality = quality;
-    next();
   });
 };
 
@@ -181,19 +155,6 @@ exports.allQualities = function(req, res) {
 
 
 //Warehouse
-
-/**
- * Find warehouse by id
- */
-exports.warehouse = function(req, res, next, id) {
-  Warehouse.load(id, function(err, warehouse) {
-    if (err) return next(err);
-    if (!warehouse) return next(new Error('Failed to load warehouse ' + id));
-    req.warehouse = warehouse;
-    next();
-  });
-};
-
 /**
  * Create an warehouse
  */
@@ -268,32 +229,6 @@ exports.allWarehouses = function(req, res) {
 //binlocation
 
 /**
- * Find binlocation by id
- */
-exports.bin = function(req, res, next, id) {
-  // console.log('get bin id:', id);
-  Binlocation.load(id, function(err, binlocation) {
-    // console.log(17,binlocation);
-    if (err) {
-      console.error('load bin err:',err);
-      return res.status(500).json({
-        error: err
-      });
-    }
-    console.log(18);
-    if (!binlocation) {
-      console.error('binlocation is null:',err);
-      return res.status(500).json({
-        error: 'failed to find binlocation'
-      });
-    } 
-    req.bin = binlocation;
-    console.log(19);
-    next();
-  });
-};
-
-/**
  * Create an binlocation
  */
 exports.createBin = function(req, res) {
@@ -321,8 +256,7 @@ exports.updateBin = function(req, res) {
   console.log('updateBin');
   var oldBin = req.bin;
   var newBinVal = _.extend(req.body, {
-    creator: req.user,
-    creatorName: req.user.name
+    creator: req.user
   });
 
   console.log('updateBin 1 newBinVal:', newBinVal);

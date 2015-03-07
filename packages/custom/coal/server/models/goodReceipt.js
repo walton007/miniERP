@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   Q = require('q'),
   math = require('mathjs'),
+  mongoosePaginate = require('mongoose-paginate'),
   commonUtil = require('./commonUtil');
 
 var BaseSchema = commonUtil.BaseSchema;
@@ -58,6 +59,21 @@ var GoodReceiptSchema = BaseSchema.extend({
   },
 
 });
+
+GoodReceiptSchema.static('getRecords', 
+  function(pageNumber, resultsPerPage, status, callback) {
+    var GoodReceipt = mongoose.model('GoodReceipt');
+    var queryConds = {deleteFlag: false, 'status': status};
+    if (status === 'all') {
+      // queryConds = {deleteFlag: false, 'status': { $in: ['new', 'checked'] }};
+      queryConds = {deleteFlag: false};
+    };
+
+    GoodReceipt.paginate(queryConds, 
+      pageNumber, resultsPerPage, callback, {sortBy:'-receiveDate'});
+
+  }
+);
 
  
 var goodReceiptOutdateThreshold = 72;
@@ -139,4 +155,6 @@ autoinc.plugin(GoodReceiptSchema, {
   field: 'sequence',
   start: 1
 });
+
+GoodReceiptSchema.plugin(mongoosePaginate);
 mongoose.model('GoodReceipt', GoodReceiptSchema);

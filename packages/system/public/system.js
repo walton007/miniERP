@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('mean.system', ['ui.router', 'mean-factory-interceptor'])
+angular.module('mean.system', ['ui.router', 'ui.router.stateHelper', 'mean-factory-interceptor'])
   .run(['$rootScope', function($rootScope) {
+    $rootScope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
+
     // console.log('angular.module run', $rootScope);
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
       var toPath = toState.url;

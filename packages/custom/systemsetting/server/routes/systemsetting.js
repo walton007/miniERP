@@ -9,39 +9,23 @@ var hasAuthorization = function(req, res, next) {
   next();
 };
 
-var getQuality = function(req, res, next) {
-  if (!req.body.qualityid) {
-    return res.status(401).send('invalid qualityid');
-  }
-
-  settings.coalquality(req, res, next, req.body.qualityid);
-};
-
-var getWarehouse = function(req, res, next) {
-  if (!req.body.warehouseId) {
-    return res.status(401).send('invalid warehouseId');
-  }
-
-  settings.warehouse(req, res, next, req.body.warehouseId);
-};
-
 var consoleRequest = function(req, res, next) {
   console.log('consoleRequest ');
   next();
 };
 
 // The Package is past automatically as first parameter
-module.exports = function(Systemsetting, app, auth, database) {
+module.exports = function(Systemsetting, app, auth, database, coalutil) {
   app.route('/minerals')
     .get(settings.allMinerals)
-    .post(auth.requiresLogin, getQuality, settings.createMineral);
+    .post(auth.requiresLogin, coalutil.getQuality, settings.createMineral);
 
   app.route('/minerals/:mineralId')
     .put(auth.isMongoId, auth.requiresLogin, settings.updateMineral)
     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyMineral);
 
   // Finish with setting up the mineralId param
-  app.param('mineralId', settings.mineral);
+  app.param('mineralId', coalutil.mineral);
 
   //coalquality
   app.route('/coalQualities')
@@ -53,7 +37,7 @@ module.exports = function(Systemsetting, app, auth, database) {
     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyQuality);
 
   // Finish with setting up the coalQualityId param
-  app.param('coalQualityId', settings.coalquality);
+  app.param('coalQualityId', coalutil.coalquality);
 
   //warehouses
   app.route('/warehouses')
@@ -65,19 +49,19 @@ module.exports = function(Systemsetting, app, auth, database) {
     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyWarehouse);
 
   // Finish with setting up the warehouseId param
-  app.param('warehouseId', settings.warehouse);
+  app.param('warehouseId', coalutil.warehouse);
 
   // bins
   app.route('/bins')
     .get(settings.allBins)
-    .post(auth.requiresLogin, getWarehouse, settings.createBin);
+    .post(auth.requiresLogin, coalutil.getWarehouse, settings.createBin);
 
   app.route('/bins/:binId')
     .put(auth.isMongoId, auth.requiresLogin, settings.updateBin)
     .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyBin);
 
   // Finish with setting up the binId param
-  app.param('binId', settings.bin);
+  app.param('binId', coalutil.bin);
 
   // binChangelogs
   app.route('/binChangelogs')

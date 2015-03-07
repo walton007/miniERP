@@ -11,10 +11,10 @@ var Systemsetting = new Module('systemsetting');
  * All MEAN packages require registration
  * Dependency injection is used to define required modules
  */
-Systemsetting.register(function(app, auth, database) {
+Systemsetting.register(function(app, auth, database, coal) {
 
   //We enable routing. By default the Package Object is passed to the routes
-  Systemsetting.routes(app, auth, database);
+  Systemsetting.routes(app, auth, database, coal.util);
 
   //We are adding a link to the main menu for all authenticated users
   Systemsetting.menus.add({
@@ -24,7 +24,6 @@ Systemsetting.register(function(app, auth, database) {
     menu: 'main',
     name: 'systemsetting',
     weight: 4,
-    isdefault : true,
   });
 
   //////////////////////////////////
@@ -63,7 +62,7 @@ Systemsetting.register(function(app, auth, database) {
 
   Systemsetting.menus.add({
     title: '煤堆设定',
-    link: 'systemsetting.logs',
+    link: 'systemsetting.binlocation',
     roles: ['admin', 'worker'],
     menu: 'main/systemsetting/one',
     name: 'binlocation',

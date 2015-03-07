@@ -39,6 +39,10 @@ BaseSchema.pre('save', function(next) {
     this.created = Date.now();
   }
 
+  if (this.creator) {
+    this.creatorName = this.creator.name;
+  }
+
   next();
 });
 
