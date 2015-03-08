@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
   Binlocation = mongoose.model('Binlocation'),
   GoodReceipt = mongoose.model('GoodReceipt'),
+  GoodIssue = mongoose.model('GoodIssue'),
   _ = require('lodash');
 
 
@@ -98,4 +99,66 @@ exports.getBinBasicInfo = function(req, res) {
         res.json(binlist);
       }
     });
+};
+
+
+/**
+ * List of getGoodReceipts
+ */
+exports.getGoodIssues = function(req, res) {
+  var pageNumber = req.query.pageNumber;
+  var pageSize = req.query.pageSize; 
+  var status = !!req.query.status ? req.query.status: 'planning';
+  GoodIssue.getRecords(pageNumber, pageSize, status,
+     function(error, pageCount, paginatedResults, itemCount) {
+      if (error) {
+        console.error(error);
+        res.status(500).json({
+          error: err
+        });
+      } else {
+        res.json({
+          pageCount: pageCount,
+          paginatedResults: paginatedResults,
+          itemCount: itemCount
+        });
+        console.log('Pages:', pageCount);
+        console.log('itemCount:', itemCount);
+        // console.log(paginatedResults);
+      }
+    });
+};
+
+/**
+ * updateGoodReceipt
+ */
+exports.updateGoodIssue = function(req, res) {
+  var gi = req.gi;
+   
+};
+
+/**
+ * createGoodIssue
+ */
+exports.createGoodIssue = function(req, res) {
+  console.log('createGoodIssue req.body:',req.body, ' req.user:',req.user);
+  var gi = new GoodIssue({
+    creator: req.user,
+    issueDate: req.body.issueDate,
+    bin: req.bin,
+    binName: req.bin.name,
+    actualWeight: 0,
+    planWeight: req.body.weight,
+    status: 'planning'
+  });
+
+  gi.save(function(err) {
+    if (err) {
+      console.error('save gi error:',err);
+      return res.status(500).json({
+        error: 'Cannot save the gr'
+      });
+    }
+    res.json(gi);
+  });
 };

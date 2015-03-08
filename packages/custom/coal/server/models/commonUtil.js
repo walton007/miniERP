@@ -5,6 +5,7 @@ require('mongoose-schema-extend');
 
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
+  User = mongoose.model('User'),
   Q = require('q');
 
 var BaseSchema = new Schema({
@@ -31,6 +32,7 @@ var BaseSchema = new Schema({
 });
 
 BaseSchema.pre('save', function(next) {
+  var self = this;
   if (!this.isNew) {
     // console.log('update modified date');
     this.modified = Date.now();
@@ -39,8 +41,20 @@ BaseSchema.pre('save', function(next) {
     this.created = Date.now();
   }
 
-  if (this.creator) {
-    this.creatorName = this.creator.name;
+  // console.log('BaseSchema.pre save creator:', this.creator, ' this.creatorName:', this.creatorName);
+
+  if (this.creator && !this.creatorName) {
+    User.findOne({'_id': this.creator}).select('name')
+    .exec(function(err, user) {
+      // console.log('err: --- ', err, user);
+      if (err) {
+        next(err);
+        return;
+      }
+      self.creatorName = user.name;
+      next();
+    });
+    return;
   }
 
   next();

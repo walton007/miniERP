@@ -120,6 +120,16 @@ function goodReceipt(req, res, next, id) {
     	req.gr = gr;
     next();
   });
+};
+
+// good issue
+function goodIssue(req, res, next, id) {
+  GoodIssue.load(id, function(err, gr) {
+    if (err) return next(err);
+    if (!gr) return next(new Error('Failed to load goodIssue ' + id));
+      req.gi = gi;
+    next();
+  });
 }
 
 module.exports = {
@@ -137,5 +147,6 @@ module.exports = {
 	bin: bin,
 	getBin: getBin,
 
-	goodReceipt: goodReceipt
+	goodReceipt: goodReceipt,
+  goodIssue: goodIssue
 };

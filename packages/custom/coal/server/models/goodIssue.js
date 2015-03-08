@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   Q = require('q'),
   math = require('mathjs'),
+  mongoosePaginate = require('mongoose-paginate'),
   commonUtil = require('./commonUtil');
 
 var BaseSchema = commonUtil.BaseSchema;
@@ -54,6 +55,28 @@ var GoodIssueSchema = BaseSchema.extend({
   },
 
 });
+
+GoodIssueSchema.static('getRecords', 
+  function(pageNumber, resultsPerPage, status, callback) {
+    var GoodIssue = mongoose.model('GoodIssue');
+    var queryConds = {deleteFlag: false, 'status': status};
+    if (status === 'all') {
+      // queryConds = {deleteFlag: false, 'status': { $in: ['new', 'checked'] }};
+      queryConds = {deleteFlag: false};
+    };
+
+    GoodIssue.paginate(queryConds, 
+      pageNumber, resultsPerPage, callback, {sortBy:'-issueDate'});
+
+  }
+);
+
+
+GoodIssueSchema.statics.load = function(id, cb) {
+  this.findOne({
+    _id: id
+  }).exec(cb);
+};
 
 var goodIssueOutdateThreshold = 72;
 GoodIssueSchema.static('updateOutdatedRecord',
@@ -139,4 +162,5 @@ autoinc.plugin(GoodIssueSchema, {
   field: 'sequence',
   start: 1
 });
+GoodIssueSchema.plugin(mongoosePaginate);
 mongoose.model('GoodIssue', GoodIssueSchema);
