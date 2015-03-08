@@ -3,12 +3,17 @@
 //Articles service used for articles REST endpoint
 angular.module('mean.coal').factory('GoodReceipts', ['$resource',
   function($resource) {
-    return $resource('goodReceipts', { 
+    return $resource('goodReceipts/:grId', { 
     	'pageSize': 5,
     	'pageNumber': 0,
-    	'status': 'all'
+    	'status': 'all',
+    	'grId': '@_id'
     }, { 
-    	'query':  {method:'GET', isArray:false}
+    	'query':  {method:'GET', isArray:false},
+    	update: {
+	        method: 'PUT'
+	      }
     });
+    
   }
 ]);

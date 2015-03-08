@@ -60,6 +60,12 @@ var GoodReceiptSchema = BaseSchema.extend({
 
 });
 
+GoodReceiptSchema.statics.load = function(id, cb) {
+  this.findOne({
+    _id: id
+  }).exec(cb);
+};
+
 GoodReceiptSchema.static('getRecords', 
   function(pageNumber, resultsPerPage, status, callback) {
     var GoodReceipt = mongoose.model('GoodReceipt');
@@ -130,6 +136,8 @@ GoodReceiptSchema.method('markOutdated', function( ) {
 });
 
 GoodReceiptSchema.method('chemicalCheck', function() {
+  ////no use now
+  
   var deferred = Q.defer();
   if (this.status !== 'new') {
     deferred.reject('only new record can be checked');

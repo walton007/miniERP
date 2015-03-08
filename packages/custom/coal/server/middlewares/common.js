@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
   Mineral = mongoose.model('Mineral'),
   Warehouse = mongoose.model('Warehouse'),
   Binlocation = mongoose.model('Binlocation'),
+  GoodReceipt = mongoose.model('GoodReceipt'),
   _ = require('lodash');
 
 
@@ -111,6 +112,16 @@ function getBin(req, res, next) {
   bin(req, res, next, req.body.binid);
 };
 
+// good receipt
+function goodReceipt(req, res, next, id) {
+  GoodReceipt.load(id, function(err, gr) {
+    if (err) return next(err);
+    if (!gr) return next(new Error('Failed to load goodReceipt ' + id));
+    	req.gr = gr;
+    next();
+  });
+}
+
 module.exports = {
 	consoleRequest: consoleRequest,
 
@@ -124,5 +135,7 @@ module.exports = {
 	getWarehouse: getWarehouse,
 
 	bin: bin,
-	getBin: getBin
+	getBin: getBin,
+
+	goodReceipt: goodReceipt
 };

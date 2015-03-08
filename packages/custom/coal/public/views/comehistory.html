@@ -4,8 +4,12 @@
 		<div class="gridStyle" data-ng-grid="goodReceiptGridOptions"></div>
 	</div>
 
+	<div data-ng-hide="!goodReceipts || goodReceipts.length"> 
+		没有来煤记录 
+	</div>
+
 	<div> 
-		<div>没有来煤记录</div> 	
+		<div>添加来煤记录</div> 	
 		<form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="create(addForm.$valid)" novalidate>
 
 		<div class="form-group">

@@ -11,10 +11,10 @@ module.exports = function(Coal, app, auth, database, coalutil) {
     .get(controller.getGoodReceipts)
     .post(auth.requiresLogin, coalutil.getMineral, coalutil.getBin, controller.createGoodReceipt);
 
-  // app.route('/goodReceipts/:grId')
-  //   .put(auth.isMongoId, auth.requiresLogin, controller.updateGoodReceipt);
+  app.route('/goodReceipts/:grId')
+    .put(auth.isMongoId, auth.requiresLogin, coalutil.goodReceipt, controller.updateGoodReceipt);
     // .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, settings.destroyMineral);
 
-
+  app.param('grId', coalutil.goodReceipt);
    
 };

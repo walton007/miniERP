@@ -61,6 +61,27 @@ exports.getGoodReceipts = function(req, res) {
     });
 };
 
+/**
+ * updateGoodReceipt
+ */
+exports.updateGoodReceipt = function(req, res) {
+  var gr = req.gr;
+  gr.status = 'checked'; 
+  gr.actualChemicalAttrs = {
+    power: req.body.power,
+    nitrogen: req.body.nitrogen
+  };
+
+  gr.save(function(err) {
+    if (err) {
+      console.error('save gr error:',err);
+      return res.status(500).json({
+        error: 'Cannot save the gr'
+      });
+    }
+    res.json(gr);
+  });
+};
 
 /**
  * List of binlocation basic infos

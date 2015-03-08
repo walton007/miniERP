@@ -17,7 +17,7 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
       });
     };
 
-    $scope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
+    // $scope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
 
     $scope.gridOptions = {
       data: 'bins',
