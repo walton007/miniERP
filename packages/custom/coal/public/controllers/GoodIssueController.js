@@ -5,7 +5,7 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
   function($scope, GoodIssues, BasicBins, $modal) {
     
     function getPagedDataAsync() {
-        GoodIssues.query({status:'all', pageNumber:$scope.pagingOptions.currentPage, pageSize: $scope.pagingOptions.pageSize}, function(data) {
+        GoodIssues.query({status:'planning', pageNumber:$scope.pagingOptions.currentPage, pageSize: $scope.pagingOptions.pageSize}, function(data) {
           $scope.goodIssues = data.paginatedResults;    
           $scope.totalServerItems = data.itemCount;     
         }); 
@@ -57,8 +57,12 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
         field: 'binName',
         displayName: '堆放煤堆'
       }, {
-        field: 'weight',
-        displayName: '重量'
+        field: 'planWeight',
+        displayName: '计划用煤重量'
+      }, {
+        field: 'editActualWeight',
+        displayName: '实际用煤重量',
+        enableCellEdit: true
       }, {
         displayName: '操作员',
         field: 'creatorName'
@@ -86,6 +90,29 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
         $scope.submitted = true;
       }
     };
+
+    $scope.$on('ngGridEventEndCellEdit', function(event) {
+        var gi = event.targetScope.row.entity;
+        var actualWeight = parseFloat(gi.editActualWeight);
+        if (!actualWeight) {
+          gi.editActualWeight = '';
+        } else {
+          // gi.actualWeight = actualWeight;
+          GoodIssues.update({_id: gi._id, actualWeight: actualWeight},
+            function(updateObj) {
+              gi.status = updateObj.status;
+              bootbox.alert('输入成功！');
+
+              for (var i = $scope.goodIssues.length - 1; i >= 0; i--) {
+                if ($scope.goodIssues[i]._id === updateObj._id) {
+                  // $scope.goodIssues.slice(i, i+1);
+                  $scope.goodIssues.splice(i, 1);
+                  break;
+                }
+              };
+            });
+        }
+    });
 
     // date control actions
     $scope.today = function() {

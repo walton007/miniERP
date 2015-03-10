@@ -30,17 +30,13 @@ angular.module('mean.coal').config(function(stateHelperProvider) {
 			url: '/labcheck',
 			templateUrl: 'coal/views/labcheck.html',
 		}, {
+			name: 'consumeplanlist',
+			url: '/consumeplanlist',
+			templateUrl: 'coal/views/consumeplanlist.html',
+		}, {
 			name: 'consumehistory',
-			url: '/consumehistory',
-			templateUrl: 'coal/views/consumehistory.html',
-		}, {
-			name: 'consumecreaterecord',
-			url: '/consumecreaterecord',
-			templateUrl: 'coal/views/consumenewrecord.html',
-		}, {
-			name: 'consumecheck',
 			url: '/consumecheck',
-			templateUrl: 'coal/views/consumecheck.html',
+			templateUrl: 'coal/views/consumehistory.html',
 		}]
 	});
 });

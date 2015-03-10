@@ -1,9 +1,4 @@
 <div class="page-header" data-ng-controller="HeaderController">
-
-  <div class="logo pull-left hide"  >
-    <a class="navbar-brand" ui-sref="home" mean-token="'site-title'">MEAN</a>
-  </div>
-
   <div class="left pull-left">
     <ul class="navbar-nav nav">
       <li data-ng-repeat="item in menus.main" ui-route="/{{item.link}}" ng-class="{active: $uiRoute}">
@@ -18,10 +13,10 @@
       <div class="pull-right" data-ng-show="global.authenticated" mean-translate></div>
     </div>
     <ul class="navbar-nav nav" data-ng-hide="global.authenticated">
-      <li><a ui-sref='auth.register'>Join</a>
+      <li><a ui-sref='auth.register'>注册</a>
       </li>
       <li class="divider-vertical"></li>
-      <li><a ui-sref='auth.login'>Log In</a>
+      <li><a ui-sref='auth.login'>登陆</a>
       </li>
     </ul>
     <ul class="navbar-nav nav" data-ng-show="global.authenticated">
@@ -30,7 +25,7 @@
           {{global.user.name}} <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-          <li><a href="/logout">Log Out</a>
+          <li><a href="/logout">退出登录</a>
           </li>
         </ul>
       </li>

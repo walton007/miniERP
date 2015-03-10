@@ -1,0 +1,61 @@
+<section data-ng-controller="GoodIssueController" data-ng-init="getInitData()">
+	<div data-ng-show="!goodIssues || goodIssues.length"> 
+		<div>计划用煤列表</div>
+		<div class="gridStyle" data-ng-grid="gridOptions"></div>
+	</div>
+	<div data-ng-hide="!goodIssues || goodIssues.length"> 
+		<div>没有计划用煤记录</div>
+	</div>
+  
+
+    <div> 	新增计划用煤记录 </div>
+    <form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="create(addForm.$valid)" novalidate>
+
+		<div class="form-group">
+			<label  class="col-md-3 control-label"> 消耗煤堆</label>
+			<div class="col-md-9">
+				<select name="bin" class="form-control" ng-model="binSelected"
+					ng-options="opt as opt.name for opt in bins" required >
+				</select>
+				<div ng-show="submitted && addForm.bin.$invalid" class="help-block">
+					<p ng-show="addForm.bin.$error.required">请选择煤堆</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.issuedate.$invalid }">
+			<label  class="col-md-3 control-label"> 用煤时间 </label>
+			<div class="col-md-9">
+				
+              <p class="input-group">
+              <input type="text" name="issuedate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+
+              <div ng-show="submitted && addForm.issuedate.$invalid" class="help-block">
+					<p ng-show="addForm.issuedate.$error.required">请输入用煤时间</p>
+			  </div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.weight.$invalid }">
+			<label  class="col-md-3 control-label"> 重量</label>
+			<div class="col-md-9">
+				<input name="weight" type="text" min="0.0" class="form-control" data-ng-model="weight" ng-pattern="numberPattern" required>
+				<div ng-show="submitted && addForm.weight.$invalid" class="help-block">
+					<p ng-show="addForm.weight.$error.required">请输入煤堆重量</p>
+					<p ng-show="addForm.weight.$error.pattern"> 请输入正确的重量（>0）</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-3 col-md-9">
+				<button type="submit" class="btn btn-info" >添加</button>
+			</div>
+		</div>
+
+	  </form>
+</section>

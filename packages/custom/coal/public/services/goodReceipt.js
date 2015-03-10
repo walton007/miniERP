@@ -4,9 +4,6 @@
 angular.module('mean.coal').factory('GoodReceipts', ['$resource',
   function($resource) {
     return $resource('goodReceipts/:grId', { 
-    	'pageSize': 5,
-    	'pageNumber': 0,
-    	'status': 'all',
     	'grId': '@_id'
     }, { 
     	'query':  {method:'GET', isArray:false},

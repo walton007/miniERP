@@ -134,6 +134,15 @@ exports.getGoodIssues = function(req, res) {
  */
 exports.updateGoodIssue = function(req, res) {
   var gi = req.gi;
+  gi.recordActualCost(req.body.actualWeight)
+  .then(function(updateObj) {
+    res.json(updateObj);
+  }, function(err) {
+    console.error('save gi error:',err);
+    return res.status(500).json({
+        error: 'Cannot save the gi'
+      });
+  });
    
 };
 

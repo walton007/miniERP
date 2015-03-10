@@ -9,6 +9,7 @@ var mongoose = require('mongoose'),
   Warehouse = mongoose.model('Warehouse'),
   Binlocation = mongoose.model('Binlocation'),
   GoodReceipt = mongoose.model('GoodReceipt'),
+  GoodIssue = mongoose.model('GoodIssue'),
   _ = require('lodash');
 
 
@@ -124,9 +125,9 @@ function goodReceipt(req, res, next, id) {
 
 // good issue
 function goodIssue(req, res, next, id) {
-  GoodIssue.load(id, function(err, gr) {
+  GoodIssue.load(id, function(err, gi) {
     if (err) return next(err);
-    if (!gr) return next(new Error('Failed to load goodIssue ' + id));
+    if (!gi) return next(new Error('Failed to load goodIssue ' + id));
       req.gi = gi;
     next();
   });

@@ -5,7 +5,6 @@ require('mongoose-schema-extend');
 
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
-  User = mongoose.model('User'),
   Q = require('q');
 
 var BaseSchema = new Schema({
@@ -32,6 +31,7 @@ var BaseSchema = new Schema({
 });
 
 BaseSchema.pre('save', function(next) {
+  var User = mongoose.model('User');
   var self = this;
   if (!this.isNew) {
     // console.log('update modified date');

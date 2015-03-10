@@ -3,7 +3,7 @@ var controller = require('../controllers/coal');
 
 // The Package is past automatically as first parameter
 module.exports = function(Coal, app, auth, database, coalutil) {
-  console.log('111 coalutil:', coalutil);
+  // console.log('111 coalutil:', coalutil);
   app.route('/basicBins')
     .get(controller.getBinBasicInfo);
 

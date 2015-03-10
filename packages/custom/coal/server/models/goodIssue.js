@@ -32,7 +32,7 @@ var GoodIssueSchema = BaseSchema.extend({
 
   actualWeight: {
     type: Number,
-    required: false
+    required: true
   },
 
   planWeight: {
@@ -56,6 +56,15 @@ var GoodIssueSchema = BaseSchema.extend({
 
 });
 
+GoodIssueSchema.pre('save', function(next) {
+  console.log(1111);
+  if (this.status === 'planning') {
+    this.actualWeight = 0;
+    console.log(2222);
+  } 
+  next();
+});
+
 GoodIssueSchema.static('getRecords', 
   function(pageNumber, resultsPerPage, status, callback) {
     var GoodIssue = mongoose.model('GoodIssue');
@@ -63,6 +72,8 @@ GoodIssueSchema.static('getRecords',
     if (status === 'all') {
       // queryConds = {deleteFlag: false, 'status': { $in: ['new', 'checked'] }};
       queryConds = {deleteFlag: false};
+    } else if (status === 'checkedAndoutdated') {
+      queryConds = {deleteFlag: false, 'status': {$in: ['checked', 'outdated']}};
     };
 
     GoodIssue.paginate(queryConds, 
@@ -133,6 +144,7 @@ GoodIssueSchema.method('markOutdated', function( ) {
 
 var goodIssueWarningThreshold = 2000;
 GoodIssueSchema.method('recordActualCost', function(actualWeight) {
+  // console.log('actualWeight:', actualWeight);
   var deferred = Q.defer();
   if (this.status !== 'planning') {
     deferred.reject('only planning record can be update');

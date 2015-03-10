@@ -15,8 +15,6 @@ angular.module('mean.systemsetting').controller('ChangelogController', ['$scope'
       var changeFlag = 'row.entity.prevBin.FIELD !== row.entity.FIELD';
       var cellTemplate = "<div class = 'text-info' > <span data-ng-show='changeFlag'>{{row.entity.prevBin.FIELD}} /</span> <span ng-class='{\"text-danger\": changeFlag}'> {{row.entity.FIELD}} </span> </div>".replace(/changeFlag/g, changeFlag);
       return cellTemplate.replace(/FIELD/g, field);
-
-        "data-ng-show";
     };
 
     $scope.getInitData = function() {
