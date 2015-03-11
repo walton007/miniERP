@@ -1,5 +1,5 @@
 <section data-ng-controller="WarehouseSettingController" data-ng-init="getInitData()">
-	<div data-ng-show="!warehouses || warehouses.length"> 
+	<div data-ng-show="!!warehouses && warehouses.length"> 
 		<div>矿场列表</div>
 		<div class="gridStyle" data-ng-grid="gridOptions"></div>
 	</div>

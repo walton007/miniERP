@@ -1,36 +1,36 @@
 'use strict';
 
-angular.module('mean.systemsetting').controller('UserSettingController', ['$scope', 'Global', 'Menus', '$rootScope', '$http', 'Users',
+angular.module('mean.systemsetting').controller('UserSettingControllerx', ['$scope', 'Global', 'Menus', '$rootScope', '$http', 'Users',
     function($scope, Global, Menus, $rootScope, $http, Users) {
         $scope.global = Global;
         $scope.userSchema = [{
-            title: 'Email',
+            title: '邮箱',
             schemaKey: 'email',
             type: 'text',
             inTable: true
         }, {
-            title: 'Name',
+            title: '昵称',
             schemaKey: 'name',
             type: 'text',
             inTable: true
         }, {
-            title: 'Username',
+            title: '用户名',
             schemaKey: 'Username',
             type: 'text',
             inTable: true
         }, {
-            title: 'Roles',
+            title: '角色',
             schemaKey: 'roles',
             type: 'select',
             options: ['authenticated', 'admin', 'itoperator'],
             inTable: true
         }, {
-            title: 'Password',
+            title: '密码',
             schemaKey: 'password',
             type: 'password',
             inTable: false
         }, {
-            title: 'Repeat password',
+            title: '请再次密码',
             schemaKey: 'confirmPassword',
             type: 'password',
             inTable: false

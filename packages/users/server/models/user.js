@@ -43,11 +43,11 @@ var escapeProperty = function(value) {
  */
 
 var UserSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    get: escapeProperty
-  },
+  // name: {
+  //   type: String,
+  //   required: true,
+  //   get: escapeProperty
+  // },
   email: {
     type: String,
     required: true,

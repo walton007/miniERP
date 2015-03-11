@@ -1,9 +1,9 @@
 <section data-ng-controller="LabsCheckController" data-ng-init="getInitData()">
-    <div data-ng-hide="!goodReceipts || goodReceipts.length"> 
+    <div data-ng-hide="!!goodReceipts && goodReceipts.length"> 
 		<div>没有来煤记录</div> 
 	</div>
 
-    <div data-ng-show="!goodReceipts || goodReceipts.length"> 
+    <div data-ng-show="!!goodReceipts && goodReceipts.length"> 
 		<div>当前来煤化验结果</div>
 		<div class="gridStyle" data-ng-grid="goodReceiptGridOptions"></div>
 

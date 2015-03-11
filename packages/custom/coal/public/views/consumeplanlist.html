@@ -1,9 +1,9 @@
 <section data-ng-controller="GoodIssueController" data-ng-init="getInitData()">
-	<div data-ng-show="!goodIssues || goodIssues.length"> 
+	<div data-ng-show="!!goodIssues && goodIssues.length"> 
 		<div>计划用煤列表</div>
 		<div class="gridStyle" data-ng-grid="gridOptions"></div>
 	</div>
-	<div data-ng-hide="!goodIssues || goodIssues.length"> 
+	<div data-ng-hide="!!goodIssues && goodIssues.length"> 
 		<div>没有计划用煤记录</div>
 	</div>
   

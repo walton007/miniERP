@@ -1,5 +1,5 @@
 <section data-ng-controller="QualitySettingController" data-ng-init="getInitData()">
-    <div data-ng-show="!coalQualities || coalQualities.length"> 
+    <div data-ng-show="!!coalQualities && coalQualities.length"> 
 		<div>燃煤品级列表</div>
 		<div class="gridStyle" data-ng-grid="qualityGridOptions"></div>
 	</div>
