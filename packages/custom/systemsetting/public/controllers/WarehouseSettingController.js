@@ -1,13 +1,12 @@
 'use strict';
 
-angular.module('mean.systemsetting').controller('WarehouseSettingController', ['$scope', 'Global', 'Systemsetting',
-'Warehouses',  function($scope, Global, Systemsetting, Warehouses, Minerals ) {
+angular.module('mean.systemsetting').controller('WarehouseSettingController', ['$scope', 'Global',  
+'Warehouses',  function($scope, Global, Warehouses, Minerals ) {
 
       $scope.getInitData = function() {
         $scope.warehouses = [];
         Warehouses.query(function(warehouses) {
           $scope.warehouses = warehouses;
-          
         });
       };
 
@@ -15,6 +14,7 @@ angular.module('mean.systemsetting').controller('WarehouseSettingController', ['
       $scope.gridOptions = {
         data: 'warehouses',
         multiSelect: false,
+        i18n: 'zh-cn',
         // rowHeight: 50,
         columnDefs: [{field:'name', displayName:'矿场名称'}, 
           {field:'comment', displayName:'备注', enableCellEdit: true},

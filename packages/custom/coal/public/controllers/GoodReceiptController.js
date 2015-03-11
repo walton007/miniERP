@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'GoodReceipts',
-    'BasicBins', 'Minerals', '$modal',
-  function($scope, GoodReceipts, BasicBins, Minerals, $modal) {
+    'BasicBins', 'Minerals',  'GlobalSetting',
+  function($scope, GoodReceipts, BasicBins, Minerals, GlobalSetting) {
     
     function getPagedDataAsync() {
         GoodReceipts.query({status:'all', pageNumber:$scope.pagingOptions.currentPage, pageSize: $scope.pagingOptions.pageSize}, function(data) {
@@ -48,6 +48,7 @@ angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'Good
 
     $scope.goodReceiptGridOptions = {
       data: 'goodReceipts',
+      i18n: 'zh-cn',
       multiSelect: false,
       enablePaging: true,
       showFooter: true,
@@ -57,7 +58,8 @@ angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'Good
       columnDefs: [{
         field: 'receiveDate',
         displayName: '日期',
-        width: '180'
+        width: '180',
+        cellFilter: 'date:"medium"'
       }, {
         field: 'sequence',
         displayName: '批次'
@@ -75,7 +77,8 @@ angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'Good
         field: 'creatorName'
       }, {
         displayName: '状态',
-        field: 'status'
+        field: 'status',
+        cellFilter: 'goodReceiptStatusFilter'
       }]
     };
 
@@ -105,25 +108,17 @@ angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'Good
     };
 
     // date control actions
-    $scope.today = function() {
-      return new Date();
-    };
+    
     $scope.open = function($event) {
       $event.preventDefault();
       $event.stopPropagation();
 
       $scope.opened = true;
     };
-    $scope.format = 'yyyy/MM/dd';
-    $scope.dt = new Date();
-    $scope.dateOptions = {
-        formatYear: 'yy',
-        startingDay: 1
-      };
-    $scope.minDate = new Date($scope.today() - 3*24 * 60 * 60 * 1000); 
-    $scope.maxDate = new Date($scope.today() + 24 * 60 * 60 * 1000);  
 
-     
-
+    $scope.format = GlobalSetting.dataFormat;
+    $scope.minDate = GlobalSetting.minDate(); 
+    $scope.maxDate = GlobalSetting.maxDate();
+    $scope.dateOptions = GlobalSetting.dateOptions;
   }
 ]);

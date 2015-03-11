@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIssues',
-    'BasicBins', '$modal',
-  function($scope, GoodIssues, BasicBins, $modal) {
+    'BasicBins', 'GlobalSetting',
+  function($scope, GoodIssues, BasicBins, GlobalSetting) {
     
     function getPagedDataAsync() {
         GoodIssues.query({status:'planning', pageNumber:$scope.pagingOptions.currentPage, pageSize: $scope.pagingOptions.pageSize}, function(data) {
@@ -40,6 +40,7 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
 
     $scope.gridOptions = {
       data: 'goodIssues',
+      i18n: 'zh-cn',
       multiSelect: false,
       enablePaging: true,
       showFooter: true,
@@ -49,7 +50,8 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
       columnDefs: [{
         field: 'issueDate',
         displayName: '日期',
-        width: '180'
+        width: '180',
+        cellFilter: 'date:"medium"'
       }, {
         field: 'sequence',
         displayName: '批次'
@@ -68,7 +70,8 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
         field: 'creatorName'
       }, {
         displayName: '状态',
-        field: 'status'
+        field: 'status',
+        cellFilter: 'goodIssueStatusFilter' 
       }]
     };
 
@@ -115,25 +118,15 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
     });
 
     // date control actions
-    $scope.today = function() {
-      return new Date();
-    };
     $scope.open = function($event) {
       $event.preventDefault();
       $event.stopPropagation();
 
       $scope.opened = true;
     };
-    $scope.format = 'yyyy/MM/dd';
-    $scope.dt = new Date();
-    $scope.dateOptions = {
-        formatYear: 'yy',
-        startingDay: 1
-      };
-    $scope.minDate = new Date($scope.today() - 3*24 * 60 * 60 * 1000); 
-    $scope.maxDate = new Date($scope.today() + 24 * 60 * 60 * 1000);  
-
-     
-
+    $scope.format = GlobalSetting.dateFormat;
+    $scope.dateOptions = GlobalSetting.dateOptions;
+    $scope.minDate = GlobalSetting.minDate; 
+    $scope.maxDate = GlobalSetting.maxDate;
   }
 ]);

@@ -19,6 +19,7 @@ angular.module('mean.systemsetting').controller('UserSettingController', ['$scop
       data: 'users',
       multiSelect: false,
       // rowHeight: 50,
+      i18n: 'zh-cn',
       columnDefs: [{
         field: 'name',
         displayName: '用户名称',
@@ -32,7 +33,7 @@ angular.module('mean.systemsetting').controller('UserSettingController', ['$scop
       }, {
         field: 'roles',
         displayName: '角色',
-        cellTemplate: '<div>{{row.entity[col.field] | roleTranslate}}</div>'
+        cellFilter: 'roleTranslate'
       }]
     };
   
@@ -110,4 +111,4 @@ angular.module('mean.systemsetting').controller('UserSettingController', ['$scop
       return roleObject[role];
     }).join(';');
   };
-}]);;
+}]);

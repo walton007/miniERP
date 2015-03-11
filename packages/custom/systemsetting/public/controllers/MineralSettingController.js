@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('mean.systemsetting').controller('MineralSettingController', ['$scope', 'Systemsetting',
+angular.module('mean.systemsetting').controller('MineralSettingController', ['$scope', 
   'Minerals', 'CoalQualities', '$modal',
-  function($scope, Systemsetting, Minerals, CoalQualities, $modal) {
+  function($scope, Minerals, CoalQualities, $modal) {
     // $scope.coalQualities = [];
     $scope.getInitData = function() {
       $scope.coalQualities = [];
@@ -22,6 +22,7 @@ angular.module('mean.systemsetting').controller('MineralSettingController', ['$s
     $scope.mineralGridOptions = {
       data: 'minerals',
       multiSelect: false,
+      i18n: 'zh-cn',
       // rowHeight: 50,
       columnDefs: [{
         field: 'name',

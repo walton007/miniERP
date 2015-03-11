@@ -8,6 +8,7 @@
       "bower_components/build/js/dist.min.js": [
         "bower_components/jquery/dist/jquery.js",
         "bower_components/angular/angular.js",
+        "bower_components/angular/i18n/angular-locale_zh-cn.js",
         "bower_components/angular-mocks/angular-mocks.js",
         "bower_components/angular-cookies/angular-cookies.js",
         "bower_components/angular-resource/angular-resource.js",
@@ -22,3 +23,5 @@
     }
   }
 }
+
+

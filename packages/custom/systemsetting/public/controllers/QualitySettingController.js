@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('mean.systemsetting').controller('QualitySettingController', ['$scope', 'Global', 'Systemsetting',
+angular.module('mean.systemsetting').controller('QualitySettingController', ['$scope', 'Global',  
 'CoalQualities',  
-    function($scope, Global, Systemsetting, CoalQualities) {
+    function($scope, Global, CoalQualities) {
       $scope.getInitData = function() {
         $scope.coalQualities = [];
         CoalQualities.query(function(coalQualities) {
@@ -29,6 +29,7 @@ angular.module('mean.systemsetting').controller('QualitySettingController', ['$s
       //coal quality functions
       $scope.qualityGridOptions = {
         data: 'coalQualities',
+        i18n: 'zh-cn',
         columnDefs: [{field:'name', displayName:'媒质名称'}, 
           {field:'comment', displayName:'备注', enableCellEdit: true},
           {field:'', width: 'auto', cellTemplate: '<button class="btn btn-danger" ng-click="delete()"><i class="glyphicon glyphicon-trash"></i></button>'}]

@@ -43,6 +43,7 @@ angular.module('mean.systemsetting').controller('ChangelogController', ['$scope'
       totalServerItems: 'totalServerItems',
       pagingOptions: $scope.pagingOptions,
       // rowHeight: 50,
+      i18n: 'zh-cn',
       columnDefs: [{
         field: 'name',
         displayName: '煤堆名称',
@@ -50,7 +51,8 @@ angular.module('mean.systemsetting').controller('ChangelogController', ['$scope'
       }, {
         field: 'created',
         displayName: '修改时间',
-        width: '180'
+        width: '180',
+        cellFilter: 'date:"medium"'
       }, {
         field: 'warehouseName',
         displayName: '所属煤场'

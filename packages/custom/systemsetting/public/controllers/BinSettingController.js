@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('mean.systemsetting').controller('BinSettingController', ['$scope', '$log', 'Systemsetting',
+angular.module('mean.systemsetting').controller('BinSettingController', ['$scope', '$log', 
   'Bins', 'Warehouses', '$modal',
-  function($scope, $log, Systemsetting, Bins, Warehouses, $modal) {
+  function($scope, $log,   Bins, Warehouses, $modal) {
     $scope.getInitData = function() {
       $scope.bins = [];
       Bins.query(function(bins) {
@@ -22,6 +22,7 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
     $scope.gridOptions = {
       data: 'bins',
       multiSelect: false,
+      i18n: 'zh-cn',
       // rowHeight: 50,
       columnDefs: [{
         field: 'name',
@@ -32,14 +33,17 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
         displayName: '所属煤场'
       }, {
         field: 'weight',
-        displayName: '重量'
+        displayName: '重量',
+        cellFilter: 'number:2'
       }, {
         field: 'chemicalAttrs.power',
-        displayName: '热值'
+        displayName: '热值',
+        cellFilter: 'number:2'
       }, {
         field: 'chemicalAttrs.nitrogen',
         displayName: 'nitrogen值',
         width: '100',
+        cellFilter: 'number:2'
       }, {
         field: '',
         width: 'auto',
@@ -119,7 +123,7 @@ angular.module('mean.systemsetting').controller('BinSettingController', ['$scope
   };
 
   $scope.editBin =   $.extend(editBin, {comment: ''});
-  $scope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
+  // $scope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
   
   $scope.updateBin = function(isValid) {
     if (isValid) {

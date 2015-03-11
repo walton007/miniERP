@@ -37,13 +37,15 @@ angular.module('mean.coal').controller('LabsCheckController', ['$scope', 'GoodRe
       enablePaging: true,
 
       showFooter: true,
+      i18n: 'zh-cn',
       totalServerItems: 'totalServerItems',
       pagingOptions: $scope.pagingOptions,
       // rowHeight: 50,
       columnDefs: [{
         field: 'receiveDate',
         displayName: '日期',
-        width: '180'  
+        width: '180',
+        cellFilter: 'date:"medium"'  
       }, {
         field: 'sequence',
         displayName: '批次'
@@ -61,7 +63,8 @@ angular.module('mean.coal').controller('LabsCheckController', ['$scope', 'GoodRe
         field: 'creatorName'
       }, {
         displayName: '状态',
-        field: 'status'
+        field: 'status',
+        cellFilter: 'goodReceiptStatusFilter' 
       }]
     };
 
