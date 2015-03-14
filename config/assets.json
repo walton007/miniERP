@@ -14,7 +14,7 @@
         "bower_components/angular-resource/angular-resource.js",
         "bower_components/angular-ui-router/release/angular-ui-router.js",
         "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js",
-        "bower_components/angular-ui-router.stateHelper/stateHelper.min.js",
+        "bower_components/angular-ui-router.stateHelper/statehelper.min.js",
         "bower_components/ng-grid/build/ng-grid.min.js",
         "bower_components/bootstrap/dist/js/bootstrap.min.js",
         "bower_components/bootbox/bootbox.js",
