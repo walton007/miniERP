@@ -66,4 +66,11 @@ module.exports = function(Systemsetting, app, auth, database, coalutil) {
   // binChangelogs
   app.route('/binChangelogs')
     .get(settings.binChangelogs);
+
+  //Setting up the users api
+  var users = require('../controllers/users');
+  app.get('/admin/users', auth.requiresAdmin, users.all);
+  app.post('/admin/users', auth.requiresAdmin, users.create);
+  app.put('/admin/users/:userId', auth.requiresAdmin, users.update);
+  app.delete('/admin/users/:userId', auth.requiresAdmin, users.destroy);
 };
