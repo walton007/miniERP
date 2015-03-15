@@ -8,6 +8,7 @@ module.exports = {
    * See http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connect-options
    * and http://mongoosejs.com/docs/connections.html for more information
    */
+  aggregate: true,
   dbOptions: {
     /*
     server: {

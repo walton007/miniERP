@@ -54,7 +54,9 @@ node_modules/
 # Bower Files
 # --------------------
 .bower-*/
-bower_components
+bower_components/*
+!bower_components/angular-i18n
+!bower_components/angular/i18n
 
 # --------------------
 # App Files
