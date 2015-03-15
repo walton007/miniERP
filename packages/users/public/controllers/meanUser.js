@@ -79,7 +79,7 @@ angular.module('mean.users')
       $scope.input = {
         type: 'password',
         placeholder: 'Password',
-        placeholderConfirmPass: 'Repeat Password',
+        placeholderConfirmPass: '请重复密码',
         iconClassConfirmPass: '',
         tooltipText: 'Show password',
         tooltipTextConfirmPass: 'Show password'
@@ -120,9 +120,9 @@ angular.module('mean.users')
           .error(function(error) {
             // Error: authentication failed
             if (error === 'Username already taken') {
-              $scope.usernameError = error;
+              $scope.usernameError = '用户名已经注册';
             } else if (error === 'Email already taken') {
-              $scope.emailError = error;
+              $scope.emailError = '邮箱已经注册';
             } else $scope.registerError = error;
           });
       };
