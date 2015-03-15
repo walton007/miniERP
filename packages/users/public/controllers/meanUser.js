@@ -78,11 +78,11 @@ angular.module('mean.users')
       $scope.global.registerForm = true;
       $scope.input = {
         type: 'password',
-        placeholder: 'Password',
+        placeholder: '密码',
         placeholderConfirmPass: '请重复密码',
         iconClassConfirmPass: '',
-        tooltipText: 'Show password',
-        tooltipTextConfirmPass: 'Show password'
+        tooltipText: '显示密码',
+        tooltipTextConfirmPass: '显示密码'
       };
 
       $scope.togglePasswordVisible = function() {
