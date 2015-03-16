@@ -71,7 +71,7 @@ module.exports = function(app, passport, db) {
     webroot: /public\/|packages\//g,
     cachebust: false
   });
-  var myAssets = require('./assets.json');
+  // var myAssets = require('./assets.json');
   //console.log('myAssets:', myAssets);
   //console.log('myAssets 2:', myAssets.core['js']['bower_components/build/js/dist.min.js']); //
 
