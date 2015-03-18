@@ -77,6 +77,8 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
 
     $scope.create = function(isValid) {
       if (isValid) {
+        this.dt.setHours(this.dateTm.getHours());
+        this.dt.setMinutes(this.dateTm.getMinutes());
         var obj = new GoodIssues({
           issueDate: this.dt,
           binid: this.binSelected._id,
@@ -126,7 +128,9 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
     };
     $scope.format = GlobalSetting.dateFormat;
     $scope.dateOptions = GlobalSetting.dateOptions;
-    $scope.minDate = GlobalSetting.minDate; 
-    $scope.maxDate = GlobalSetting.maxDate;
+    $scope.minDate = GlobalSetting.minDate(); 
+    $scope.maxDate = GlobalSetting.maxDate();
+
+    $scope.dateTm = new Date();
   }
 ]);

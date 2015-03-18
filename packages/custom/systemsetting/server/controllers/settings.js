@@ -237,6 +237,9 @@ exports.createBin = function(req, res) {
   bin.creator = req.user;
   bin.warehouse = req.warehouse;
   bin.warehouseName = req.warehouse.name;
+  //set create time 5 days before
+  bin.created =  new Date(Date.now() - 5*24 * 60 * 60 * 1000); 
+  // console.log()
 
   bin.save(function(err) {
     if (err) {

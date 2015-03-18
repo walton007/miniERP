@@ -25,7 +25,7 @@
 
 		<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.issuedate.$invalid }">
 			<label  class="col-md-3 control-label"> 用煤时间 </label>
-			<div class="col-md-9">
+			<div class="col-md-5" minierp-datetime>
 				
               <p class="input-group">
               <input type="text" name="issuedate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
@@ -38,6 +38,9 @@
 					<p ng-show="addForm.issuedate.$error.required">请输入用煤时间</p>
 			  </div>
 			</div>
+			<div class="col-md-4">
+					<timepicker ng-model="dateTm" hour-step="1" minute-step="1" show-meridian="true"></timepicker>
+				</div>
 		</div>
 
 		<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.weight.$invalid }">

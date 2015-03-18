@@ -17,6 +17,10 @@
 	padding-left: 90px;
 }
 
+.minierp-datetime {
+  top: 33px;
+}
+
 .gridStyle {
     border: 1px solid rgb(212,212,212);
     width: 800px; 

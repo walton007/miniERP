@@ -16,7 +16,7 @@ angular.module('mean.systemsetting').factory('GlobalSetting', [
       maxDate: function() {
         return new Date(today()  + 24 * 60 * 60 * 1000); 
       },
-      dataFormat: 'yyyy/MM/dd' 
+      dataFormat: 'yyyy-MM-dd' 
     };
   }
 ]).filter('goodReceiptStatusFilter', [ function() {

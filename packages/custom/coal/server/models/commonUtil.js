@@ -37,8 +37,10 @@ BaseSchema.pre('save', function(next) {
     // console.log('update modified date');
     this.modified = Date.now();
   } else {
-    // console.log('add new object');
-    this.created = Date.now();
+    console.log('add new object created:', this.created);
+    if (!this.created) {
+      this.created = Date.now();
+    };
   }
 
   // console.log('BaseSchema.pre save creator:', this.creator, ' this.creatorName:', this.creatorName);

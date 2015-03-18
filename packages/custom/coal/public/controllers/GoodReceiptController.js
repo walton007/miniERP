@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'GoodReceipts',
-    'BasicBins', 'Minerals',  'GlobalSetting',
-  function($scope, GoodReceipts, BasicBins, Minerals, GlobalSetting) {
+    'BasicBins', 'Minerals',  'GlobalSetting', '$log',
+  function($scope, GoodReceipts, BasicBins, Minerals, GlobalSetting, $log) {
     
     function getPagedDataAsync() {
         GoodReceipts.query({status:'all', pageNumber:$scope.pagingOptions.currentPage, pageSize: $scope.pagingOptions.pageSize}, function(data) {
@@ -84,6 +84,8 @@ angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'Good
 
     $scope.create = function(isValid) {
       if (isValid) {
+        this.dt.setHours(this.dateTm.getHours());
+        this.dt.setMinutes(this.dateTm.getMinutes());
         var obj = new GoodReceipts({
           receiveDate: this.dt,
           binid: this.binSelected._id,
@@ -120,5 +122,7 @@ angular.module('mean.coal').controller('GoodReceiptController', ['$scope', 'Good
     $scope.minDate = GlobalSetting.minDate(); 
     $scope.maxDate = GlobalSetting.maxDate();
     $scope.dateOptions = GlobalSetting.dateOptions;
+
+    $scope.dateTm = new Date();
   }
 ]);
