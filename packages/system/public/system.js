@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mean.system', ['ui.router', 'ui.router.stateHelper', 'mean-factory-interceptor'])
-  .run(['$rootScope', function($rootScope) {
+  .run(['$rootScope', '$location', function($rootScope, $location) {
     $rootScope.numberPattern = /^[0-9]*[.]?[0-9]*$/;
 
     // console.log('angular.module run', $rootScope);
@@ -22,5 +22,11 @@ angular.module('mean.system', ['ui.router', 'ui.router.stateHelper', 'mean-facto
       }
 
     });
+
+    console.log('window.gotologin:', window.gotologin);
+    if (!window.authenticated) {
+      $location.url('/auth/login');
+      
+    }
   }])
 ;

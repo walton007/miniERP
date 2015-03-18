@@ -12,13 +12,18 @@
       <div class="pull-right" data-ng-show="global.authenticated" mean-token-editable></div>
       <div class="pull-right" data-ng-show="global.authenticated" mean-translate></div>
     </div>
-    <ul class="navbar-nav nav" data-ng-hide="global.authenticated">
+
+    <div class="col-md-12 h2" data-ng-show="!global.authenticated" style="text-align: center; color:white">
+        煤电信息管理系统
+    </div>
+
+    <!-- <ul class="navbar-nav nav" data-ng-hide="global.authenticated">
       <li><a ui-sref='auth.register'>注册</a>
       </li>
       <li class="divider-vertical"></li>
       <li><a ui-sref='auth.login'>登陆</a>
       </li>
-    </ul>
+    </ul> -->
     <ul class="navbar-nav nav" data-ng-show="global.authenticated">
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
