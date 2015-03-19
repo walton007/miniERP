@@ -139,8 +139,8 @@ exports.updateGoodIssue = function(req, res) {
     res.json(updateObj);
   }, function(err) {
     console.error('save gi error:',err);
-    return res.status(500).json({
-        error: 'Cannot save the gi'
+    return res.status(400).json({
+        error: err
       });
   });
    
@@ -160,12 +160,13 @@ exports.createGoodIssue = function(req, res) {
     planWeight: req.body.weight,
     status: 'planning'
   });
-
-  gi.save(function(err) {
+  
+  //pass req.bin is just a workaround
+  gi.create(req.bin, function(err) {
     if (err) {
       console.error('save gi error:',err);
-      return res.status(500).json({
-        error: 'Cannot save the gr'
+      return res.status(400).json({
+        error: err
       });
     }
     res.json(gi);

@@ -23,7 +23,7 @@ angular.module('mean.system', ['ui.router', 'ui.router.stateHelper', 'mean-facto
 
     });
 
-    console.log('window.gotologin:', window.gotologin);
+    // console.log('window.gotologin:', window.gotologin);
     if (!window.authenticated) {
       $location.url('/auth/login');
       

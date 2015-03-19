@@ -3,6 +3,14 @@
 angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIssues',
     'BasicBins', 'GlobalSetting',
   function($scope, GoodIssues, BasicBins, GlobalSetting) {
+    function alertErrMsg(error) {
+      var errMsg = ' 输入失败！错误原因：'+ error
+      if ('notEnoughWeight' === error) {
+        errMsg = '库存不足！请重新输入！';
+      };
+      
+      bootbox.alert(errMsg);
+    }
     
     function getPagedDataAsync() {
         GoodIssues.query({status:'planning', pageNumber:$scope.pagingOptions.currentPage, pageSize: $scope.pagingOptions.pageSize}, function(data) {
@@ -44,6 +52,9 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
       multiSelect: false,
       enablePaging: true,
       showFooter: true,
+      enableColumnResize: true,
+      enableColumnReordering:true,
+      enableHighlighting:true,
       totalServerItems: 'totalServerItems',
       pagingOptions: $scope.pagingOptions,
       // rowHeight: 50,
@@ -64,7 +75,8 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
       }, {
         field: 'editActualWeight',
         displayName: '实际用煤重量',
-        enableCellEdit: true
+        enableCellEdit: true,
+        cellClass: 'minierp-editable'
       }, {
         displayName: '操作员',
         field: 'creatorName'
@@ -88,7 +100,7 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
           $scope.goodIssues.push(newResource);
           $scope.weight = '';
         }, function(errObj) {
-          bootbox.alert('创建失败！错误原因：'+ errObj.data.error);
+          alertErrMsg(errObj.data.error);
         });
         $scope.submitted = false;
       } else {
@@ -100,7 +112,9 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
         var gi = event.targetScope.row.entity;
         var actualWeight = parseFloat(gi.editActualWeight);
         if (!actualWeight) {
-          gi.editActualWeight = '';
+          $scope.$apply(function() {
+            gi.editActualWeight = '';
+          });
         } else {
           // gi.actualWeight = actualWeight;
           GoodIssues.update({_id: gi._id, actualWeight: actualWeight},
@@ -115,6 +129,9 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
                   break;
                 }
               };
+            },
+            function(errObj) {
+              alertErrMsg(errObj.data.error);
             });
         }
     });

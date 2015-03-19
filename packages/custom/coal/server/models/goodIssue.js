@@ -60,7 +60,6 @@ GoodIssueSchema.pre('save', function(next) {
   console.log(1111);
   if (this.status === 'planning') {
     this.actualWeight = 0;
-    console.log(2222);
   } 
   next();
 });
@@ -86,7 +85,7 @@ GoodIssueSchema.static('getRecords',
 GoodIssueSchema.statics.load = function(id, cb) {
   this.findOne({
     _id: id
-  }).exec(cb);
+  }).populate('bin').exec(cb);
 };
 
 var goodIssueOutdateThreshold = 72;
@@ -144,7 +143,7 @@ GoodIssueSchema.method('markOutdated', function( ) {
 
 var goodIssueWarningThreshold = 2000;
 GoodIssueSchema.method('recordActualCost', function(actualWeight) {
-  // console.log('actualWeight:', actualWeight);
+  console.log('recordActualCost:', actualWeight);
   var deferred = Q.defer();
   if (this.status !== 'planning') {
     deferred.reject('only planning record can be update');
@@ -156,18 +155,64 @@ GoodIssueSchema.method('recordActualCost', function(actualWeight) {
     return deferred.promise;
   };
 
-  this.actualWeight = actualWeight;
-  this.status = 'checked';
-  this.warnflag = (math.abs(actualWeight - this.planWeight) > goodIssueWarningThreshold);
-  this.save(function(err, savedObj, numberAffected) {
-    if (err) {
+  //Check whether actualWeight exceed actual inventory weight
+  var self = this;
+  var binCheckDtd = checkWeightEnoughInBin(this.bin, actualWeight);
+  binCheckDtd.then(
+    function() {
+      self.actualWeight = actualWeight;
+      self.status = 'checked';
+      self.warnflag = (math.abs(actualWeight - self.planWeight) > goodIssueWarningThreshold);
+      self.save(function(err, savedObj, numberAffected) {
+        if (err) {
+          deferred.reject(err);
+          return;
+        }
+        deferred.resolve(savedObj);
+      });
+    }, 
+    function(err) {
       deferred.reject(err);
-      return;
-    }
-    deferred.resolve(savedObj);
-  });
+    });
+  
   return deferred.promise;
 });
+
+GoodIssueSchema.method('create', function(bin, cb) {
+  console.log('GoodIssue create:');
+  var self = this;
+  var binCheckDtd = checkWeightEnoughInBin(bin, this.planWeight);
+  binCheckDtd.then(
+    function() {
+      self.save(cb);
+    },
+    function(err) {
+      cb(err);
+    });
+});
+
+function checkWeightEnoughInBin(bin, weight) {
+  // console.log('checkWeightEnoughInBin bin:', bin);
+  var deferred = Q.defer();
+  var binDtd = bin.getInventoryInfo();
+  binDtd.then(
+    function(retBin) {
+      console.log(1);
+      if (retBin.weight < weight) {
+        console.log('retBin.weight < actualWeight!');
+        deferred.reject('notEnoughWeight');
+        return;
+      } 
+      deferred.resolve();
+    }, 
+    function(err) {
+      console.log(2);
+      deferred.reject(err);
+    });
+
+  return deferred.promise;
+}
+ 
 
 autoinc.plugin(GoodIssueSchema, {
   model: 'GoodIssue',

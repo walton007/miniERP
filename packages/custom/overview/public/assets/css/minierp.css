@@ -27,6 +27,10 @@
     height: 400px;
 }
 
+.minierp-editable {
+  color: red;
+}
+
 
 .modal.fade {
   opacity: 1;
