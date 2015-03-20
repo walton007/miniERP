@@ -40,13 +40,13 @@ angular.module('mean.users')
         $scope.input.type = $scope.input.type === 'text' ? 'password' : 'text';
         $scope.input.placeholder = $scope.input.placeholder === 'Password' ? 'Visible Password' : 'Password';
         $scope.input.iconClass = $scope.input.iconClass === 'icon_hide_password' ? '' : 'icon_hide_password';
-        $scope.input.tooltipText = $scope.input.tooltipText === 'Show password' ? 'Hide password' : 'Show password';
+        $scope.input.tooltipText = $scope.input.tooltipText === '显示密码' ? '隐藏密码' : '显示密码';
       };
 
       // Register the login() function
       $scope.login = function() {
         $http.post('/login', {
-          email: $scope.user.email,
+          username: $scope.user.username,
           password: $scope.user.password
         })
           .success(function(response) {
@@ -66,7 +66,7 @@ angular.module('mean.users')
             }
           })
           .error(function() {
-            $scope.loginerror = 'Authentication failed.';
+            $scope.loginerror = '认证失败.';
           });
       };
     }
@@ -102,7 +102,6 @@ angular.module('mean.users')
         $scope.usernameError = null;
         $scope.registerError = null;
         $http.post('/register', {
-          email: $scope.user.email,
           password: $scope.user.password,
           confirmPassword: $scope.user.confirmPassword,
           username: $scope.user.username,

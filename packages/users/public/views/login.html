@@ -5,9 +5,8 @@
 
     <form id="login_form" ng-submit="login()">
         <div class="input-wrapper">
-            <input required id="email_block" type="email" name="email" placeholder="邮件地址" ng-model="user.email">
+            <input required id="username" name="username" placeholder="用户名" ng-model="user.username">
             <div class="error_message">请输入正确的信息 #</div>
-            <span class="pic email"></span>
         </div>
         <div class="input-wrapper">
             <input required id="password_block" name="password" type="{{input.type}}" placeholder="密码" ng-model="user.password">

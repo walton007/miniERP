@@ -21,15 +21,12 @@ angular.module('mean.systemsetting').controller('UserSettingController', ['$scop
       // rowHeight: 50,
       i18n: 'zh-cn',
       columnDefs: [{
-        field: 'name',
+        field: 'username',
         displayName: '用户名称',
         width: '120',
       }, {
-        field: 'username',
+        field: 'name',
         displayName: '昵称'
-      }, {
-        field: 'email',
-        displayName: '邮箱'
       }, {
         field: 'roles',
         displayName: '角色',
@@ -46,7 +43,7 @@ angular.module('mean.systemsetting').controller('UserSettingController', ['$scop
 
       if (isValid) {
         var obj = new Users({
-            email: $scope.email,
+            // email: $scope.email,
             name: $scope.name,
             username: $scope.username,
             password: $scope.password,
