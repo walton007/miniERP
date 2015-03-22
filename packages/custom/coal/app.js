@@ -25,15 +25,12 @@ Coal.register(function(app, auth, database) {
     link: 'coalmanage',
     roles: ['worker'],
     menu: 'main',
-    name: 'coal',
-    weight: 2,
-    
-    isdefault : true,
+    name: 'coal'
   });
 
   //come manage
   Coal.menus.add({
-    title: '来煤',
+    title: '来煤管理',
     roles: ['worker'],
     menu: 'main/coal',
     name: 'come',
@@ -46,19 +43,15 @@ Coal.register(function(app, auth, database) {
     link: 'coalmanage.comehistory',
     roles: ['worker'],
     menu: 'main/coal/come',
-    name: 'history',
-    weight: 1,
-
+    name: 'history'
   });
 
-  // Coal.menus.add({
-  //   title: '来煤录入',
-  //   link: 'coalmanage.comecreate',
-  //   roles: ['worker'],
-  //   menu: 'main/coal/come',
-  //   name: 'create',
-  //   weight: 2,
-  // });
+  Coal.menus.add({
+    title: '来煤录入',
+    link: 'coalmanage.createGoodReceipt',
+    roles: ['worker'],
+    menu: 'main/coal/come'
+  });
 
   // Coal.menus.add({
   //   title: '来煤审核',

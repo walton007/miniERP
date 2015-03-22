@@ -1,0 +1,83 @@
+<section data-ng-controller="CreateGoodReceiptController" data-ng-init="getInitData()">
+		<div class="row h2 text-center">添加来煤记录</div>
+		<form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="create(addForm.$valid)" novalidate>
+			<div class="form-group">
+				<label  class="col-md-3 control-label"> 矿源</label>
+				<div class="col-md-9">
+					<select name="mineral" class="form-control" ng-model="mineralSelected"
+						ng-options="opt as opt.name for opt in minerals" required >
+					</select>
+					<div ng-show="submitted && addForm.mineral.$invalid" class="help-block">
+						<p ng-show="addForm.mineral.$error.required">请选择矿源</p>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label  class="col-md-3 control-label"> 存放煤堆</label>
+				<div class="col-md-9">
+					<select name="bin" class="form-control" ng-model="binSelected"
+						ng-options="opt as opt.name for opt in bins" required >
+					</select>
+					<div ng-show="submitted && addForm.bin.$invalid" class="help-block">
+						<p ng-show="addForm.bin.$error.required">请选择煤堆</p>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.comedate.$invalid }">
+				<label  class="col-md-3 control-label"> 来煤时间 </label>
+				<div class="col-md-5 minierp-datetime">
+					<p class="input-group">
+						<input type="text" name="comedate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</p>
+					<div ng-show="submitted && addForm.comedate.$invalid" class="help-block">
+						<p ng-show="addForm.comedate.$error.required">请输入来煤时间</p>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<timepicker ng-model="dateTm" hour-step="1" minute-step="1" show-meridian="true"></timepicker>
+				</div>
+			</div>
+			
+			
+			<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.weight.$invalid }">
+				<label  class="col-md-3 control-label"> 重量</label>
+				<div class="col-md-9">
+					<input name="weight" type="text" min="0.0" class="form-control" data-ng-model="weight" ng-pattern="numberPattern" required>
+					<div ng-show="submitted && addForm.weight.$invalid" class="help-block">
+						<p ng-show="addForm.weight.$error.required">请输入煤堆重量</p>
+						<p ng-show="addForm.weight.$error.pattern"> 请输入正确的重量（>0）</p>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.power.$invalid }">
+				<label  class="col-md-3 control-label"> 热值</label>
+				<div class="col-md-9">
+					<input name="power" type="text" class="form-control" data-ng-model="power" ng-pattern="numberPattern" required>
+					<div ng-show="submitted && addForm.power.$invalid" class="help-block">
+						<p ng-show="addForm.power.$error.required">请输入热值</p>
+						<p ng-show="addForm.power.$invalid && addForm.power.$error.pattern" class="help-block">请输入正确的热值（>0）</p>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.nitrogen.$invalid }">
+				<label  class="col-md-3 control-label"> nitrogen值</label>
+				<div class="col-md-9">
+					<input name="nitrogen" type="text" class="form-control" data-ng-model="nitrogen" ng-pattern="numberPattern" required>
+					<div ng-show="submitted && addForm.nitrogen.$invalid" class="help-block">
+						<p ng-show="addForm.nitrogen.$error.required">请输入nitrogen值</p>
+						<p ng-show="addForm.nitrogen.$error.pattern"  class="help-block">请输入正确的nitrogen（>0）</p>
+					</div>
+					
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-offset-3 col-md-9">
+					<button type="submit" class="btn btn-info">添加</button>
+				</div>
+			</div>
+		</form>
+	 
+</section>

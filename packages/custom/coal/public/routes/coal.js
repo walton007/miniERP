@@ -10,9 +10,9 @@ angular.module('mean.coal').config(function(stateHelperProvider) {
 			url: '/comehistory',
 			templateUrl: 'coal/views/comehistory.html',
 		}, {
-			name: 'comecreate',
-			url: '/comecreate',
-			templateUrl: 'coal/views/comecreate.html',
+			name: 'createGoodReceipt',
+			url: '/createGoodReceipt',
+			templateUrl: 'coal/views/createGoodReceipt.html',
 		}, {
 			name: 'comecheck',
 			url: '/comecheck',
