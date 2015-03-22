@@ -30,7 +30,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '基础数据设置',
     link: 'systemsetting.binlocation',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting',
     name: 'one',  
     isdefault : true,
@@ -39,7 +39,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '煤品设置',
     link: 'systemsetting.quality',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting/one',
     name: 'quality',
   });
@@ -47,7 +47,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '矿场设置',
     link: 'systemsetting.warehouses',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting/one',
     name: 'warehouse',
   });
@@ -55,7 +55,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '矿源设定',
     link: 'systemsetting.minerals',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting/one',
     name: 'minerals'
   });
@@ -63,7 +63,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '煤堆设定',
     link: 'systemsetting.binlocation',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting/one',
     name: 'binlocation',
   });
@@ -72,7 +72,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '用户管理设置',
     link: 'systemsetting.users',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting',
     name: 'two',  
   });
@@ -80,7 +80,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '用户设定',
     link: 'systemsetting.users',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting/two',
     name: 'users',
   });
@@ -88,7 +88,7 @@ Systemsetting.register(function(app, auth, database, coal) {
   Systemsetting.menus.add({
     title: '查看库存修改日志',
     link: 'systemsetting.logs',
-    roles: ['admin', 'worker'],
+    roles: ['admin'],
     menu: 'main/systemsetting',
     name: 'logs'
   });

@@ -63,6 +63,30 @@ angular.module('mean.system').factory('Global', [
     if (roles.indexOf('admin')) {
       return '/systemsetting/users';
     };
+    //GoodReceipt
+    if (roles.indexOf('worker')) {
+      return '/coalmanage/createGoodReceipt';
+    };
+    if (roles.indexOf('workerAdmin')) {
+      return '/coalmanage/comehistory';
+    };
+
+    //Chemical Checker
+    if (roles.indexOf('chemChecker')) {
+      return '/coalmanage/labrecords';
+    };
+    if (roles.indexOf('chemAdmin')) {
+      return '/coalmanage/labsHistory';
+    };
+
+    //GoodIssue
+    if (roles.indexOf('workerBAdmin')) {
+      return '/coalmanage/createGoodIssue';
+    };
+    
+    if (roles.indexOf('workerB')) {
+      return '/coalmanage/recordConsume';
+    };
     if (roles.indexOf('chemChecker')) {
       return '/coalmanage/labrecords';
     };

@@ -20,7 +20,7 @@ Overview.register(function(app, auth, database) {
   Overview.menus.add({
     title: '总览',
     link: 'overview',
-    roles: ['admin', 'worker'],
+    roles: ['readOnlyAdmin', 'admin'],
     menu: 'main',
     name: 'overview'
   });
@@ -28,7 +28,7 @@ Overview.register(function(app, auth, database) {
   Overview.menus.add({
     title: '查看存煤',
     link: 'overview.inventory',
-    roles: ['admin', 'worker'],
+    roles: ['readOnlyAdmin', 'admin'],
     menu: 'main/overview',
     name: 'one',
     isdefault : true,
@@ -37,7 +37,7 @@ Overview.register(function(app, auth, database) {
   Overview.menus.add({
     title: '报表统计',
     link: 'overview.statistic',
-    roles: ['admin', 'worker'],
+    roles: ['readOnlyAdmin', 'admin'],
     menu: 'main/overview',
     name: 'two'
   });
