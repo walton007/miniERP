@@ -1,0 +1,9 @@
+<section data-ng-controller="BinDashboardController" data-ng-init="getInitData()">
+	<div data-ng-show="!!bins && bins.length" >
+		<div class="row h2 text-center">煤堆列表</div>
+		<div class="gridStyle" data-ng-grid="gridOptions"></div>
+	</div>
+	<div data-ng-show="!bins || bins.length == 0">
+		<div class="row h2 text-center">没有煤堆信息</div> 
+	</div>
+</section>

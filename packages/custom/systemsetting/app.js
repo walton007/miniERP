@@ -86,13 +86,13 @@ Systemsetting.register(function(app, auth, database, coal) {
   });
 
   Systemsetting.menus.add({
-    title: '查看日志',
+    title: '查看库存修改日志',
     link: 'systemsetting.logs',
     roles: ['admin', 'worker'],
-    menu: 'main/systemsetting/two',
+    menu: 'main/systemsetting',
     name: 'logs'
   });
-  
+
   Systemsetting.aggregateAsset('css', 'systemsetting.css');
 
   /**

@@ -4,11 +4,11 @@ angular.module('mean.overview').config(function(stateHelperProvider) {
 	stateHelperProvider.setNestedState({
 		name: 'overview',
 		url: '/overview',
-		templateUrl: 'overview/views/index.html',
+		templateUrl: 'systemsetting/views/index.html',
 		children: [{
 			name: 'inventory',
 			url: '/inventory',
-			templateUrl: 'overview/views/inventory.html',
+			templateUrl: 'systemsetting/views/binDashboard.html',  
 		}, {
 			name: 'statistic',
 			url: '/statistic',
