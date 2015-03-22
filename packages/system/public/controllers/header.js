@@ -4,7 +4,8 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 '$state',
 function($scope, $rootScope, Global, Menus, $stateProvider) {
   $scope.global = Global;
-  $scope.menus = {};
+  $scope.menus = {main: window.menus};
+  $scope.mainMenus =  window.menus;
 
   // Default hard coded menu items for main menu
   var defaultMainMenu = [];
@@ -34,14 +35,15 @@ function($scope, $rootScope, Global, Menus, $stateProvider) {
   }
 
   // Query server for menus and check permissions
-  var defer = queryMenu('main', defaultMainMenu);
-  console.log('defer:', defer);
+  // var defer = queryMenu('main', defaultMainMenu);
+  // console.log('defer:', defer);
 
-  $scope.isCollapsed = false;
+  // $scope.isCollapsed = false;
+  // $scope.curStateLink = "helo";
 
   $rootScope.$on('loggedin', function() {
 
-    queryMenu('main', defaultMainMenu);
+    // queryMenu('main', defaultMainMenu);
 
     $scope.global = {
       authenticated: !!$rootScope.user,
@@ -49,30 +51,19 @@ function($scope, $rootScope, Global, Menus, $stateProvider) {
     };
   });
 
-  $rootScope.$watch('menuname', function(newVal, oldVal) {
-    console.log('!!watch menuname:', newVal, oldVal, Global.menu);
-    if (newVal.indexOf('.') > 0) {
-      return;
-    } else if (Global.menu) {
-      for (var i = 0; i < Global.menu.length; i = i + 1) {
-        var currentMenu = (Global.menu[i]);
-        if (newVal === currentMenu.link) {
-          $rootScope.currentMenu = currentMenu;
-          console.log('$rootScope.currentMenu:', currentMenu);
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+      // var toPath = toState.url;
+      // toPath = toPath.replace(new RegExp('/', 'g'), '');
+      // toPath = toPath.replace(new RegExp(':', 'g'),'-');
+      // $rootScope.state = toPath;
+     
+      // $scope.curState = toState;
+      // $scope.curStateLink = toState.name;
+      // $scope.apply(function() {
+      //   $scope.curStateLink = toState.name;
+      // });
 
-          //handle submenu
-          for (var j = 0; j < currentMenu.submenus.length; j = j + 1) {
-            var submenu = currentMenu.submenus[j];
-            if (submenu.isdefault) {
-              console.log('goto submenu:', submenu.link);
-              $stateProvider.go(submenu.link);
-              break;
-            }
-          }
+       console.log('angular.module toState in HeaderController', toState);
 
-          break;
-        }
-      }
-    }
-  });
+    });
 }]);

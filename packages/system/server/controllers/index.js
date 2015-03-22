@@ -7,9 +7,6 @@ exports.render = function(req, res) {
   var modules = [];
   // Preparing angular modules list with dependencies
   for (var name in mean.modules) {
-    if (!req.user && ['access', 'system', 'users', 'theme'].indexOf(name) === -1) {
-      // continue;
-    };
     modules.push({
       name: name,
       module: 'mean.' + name,
@@ -21,47 +18,25 @@ exports.render = function(req, res) {
     return req.user && req.user.roles.indexOf('admin') !== -1;
   }
 
- // console.log('modules:', mean.modules);
- //  console.log('req.user is:', req.user );
- //  console.log('res.aggregatedassets is:', res.locals.aggregatedassets );
+  function getMenus() {
+      var roles = req.user ? req.user.roles : ['anonymous'];
 
-  //filter res.locals.aggregatedassets for non registered user
-  // if (!req.user) {
+      var menu = 'main';
+      var defaultMenu = [];
+   
+      var menus = mean.menus.get({
+        roles: roles,
+        menu: menu,
+        defaultMenu: defaultMenu.map(function(item) {
+          return JSON.parse(item);
+        })
+      });
 
-  //    res.locals.aggregatedassets2 =    { header: { css: [  ], js: [] },
-  // footer: 
-  //  { css: 
-  //     [ '/packages/system/public/assets/css/common.css',
-  //       '/packages/theme/public/assets/css/loginForms.css',
-  //       '/packages/theme/public/assets/css/theme.css' ],
-  //    js: 
-  //     [ '/bower_components/jquery/dist/jquery.min.js',
-  //       '/bower_components/angular/angular.min.js',
-
-  //       '/bower_components/angular-cookies/angular-cookies.min.js',
-  //       '/bower_components/angular-resource/angular-resource.min.js',
-  //       '/bower_components/angular-ui-router/release/angular-ui-router.min.js',
-  //       '/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
-  //       '/bower_components/angular-ui-router.stateHelper/statehelper.min.js',
-  //       '/bower_components/bootstrap/dist/js/bootstrap.min.js',
-  //       '/packages/system/public/init.js',
-  //       '/packages/system/public/system.js',
-  //       '/packages/theme/public/theme.js',
-  //       '/packages/users/public/users.js',
-        
-  //       '/packages/system/public/controllers/header.js',
-  //       '/packages/system/public/controllers/index.js',
-  //       '/packages/system/public/routes/system.js',
-  //       '/packages/system/public/services/global.js',
-  //       '/packages/system/public/services/interceptor.js',
-  //       '/packages/system/public/services/menus.js',
-  //       '/packages/theme/public/controllers/theme.js',
-  //       '/packages/theme/public/routes/theme.js',
-  //       '/packages/theme/public/services/theme.js',
-  //       '/packages/users/public/controllers/meanUser.js',
-  //       '/packages/users/public/routes/auth.js',
-  //       '/packages/users/public/services/meanUser.js'] } };
-  // };
+      return menus.sort( function(a,b) {
+        var sortArray  = ['overview', 'coal', 'systemsetting'];
+        return sortArray.indexOf(a.name) - sortArray.indexOf(b.name);
+      });
+    }
   
   // Send some basic starting info to the view
   res.render('index', {
@@ -73,6 +48,7 @@ exports.render = function(req, res) {
     } : {},
     modules: modules,
     isAdmin: isAdmin,
-    adminEnabled: isAdmin() && mean.moduleEnabled('mean-admin')
+    adminEnabled: isAdmin() && mean.moduleEnabled('mean-admin'),
+    menus: getMenus()
   });
 };
