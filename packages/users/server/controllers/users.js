@@ -49,6 +49,8 @@ exports.session = function(req, res) {
 exports.create = function(req, res, next) {
   var user = new User(req.body);
 
+  console.log('user.create');
+
   user.provider = 'local';
 
   // because we set our user.provider to local our models/user.js validation will always be true
@@ -63,9 +65,12 @@ exports.create = function(req, res, next) {
     return res.status(400).send(errors);
   }
 
+console.log('user.create 1');
+
   // Hard coded for now. Will address this with the user permissions system in v0.3.5
   user.roles = ['authenticated', 'admin'];
   user.save(function(err) {
+    console.log('user.save err:', err);
     if (err) {
       switch (err.code) {
         case 11000:

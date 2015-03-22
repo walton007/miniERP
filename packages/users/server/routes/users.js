@@ -35,6 +35,7 @@ module.exports = function(MeanUser, app, auth, database, passport) {
     .post(passport.authenticate('local', {
       failureFlash: true
     }), function(req, res) {
+      console.log('req.user login:', req.user.name);
       res.send({
         user: req.user,
         redirect: (req.user.roles.indexOf('admin') !== -1) ? req.get('referer') : false

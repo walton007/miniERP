@@ -17,9 +17,11 @@ function($scope, $rootScope, Global, Menus, $stateProvider) {
       name: name,
       defaultMenu: defaultMenu
     }, function(menu) {
+      console.log('queryMenu in HeaderController menu:', menu);
       $scope.menus[name] = menu;
 
       Global.menu = menu;
+      $scope.mainMenus = menu;
 
       //$stateProvider.go(menu[0].link);
       for (var i = 0; i < Global.menu.length; i = i + 1) {
@@ -43,7 +45,7 @@ function($scope, $rootScope, Global, Menus, $stateProvider) {
 
   $rootScope.$on('loggedin', function() {
 
-    // queryMenu('main', defaultMainMenu);
+    queryMenu('main', defaultMainMenu);
 
     $scope.global = {
       authenticated: !!$rootScope.user,

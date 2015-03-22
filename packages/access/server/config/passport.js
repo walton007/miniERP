@@ -14,12 +14,14 @@ module.exports = function(passport) {
 
   // Serialize the user id to push into the session
   passport.serializeUser(function(user, done) {
+    console.log('passport.serializeUser user:', user);
     done(null, user.id);
   });
 
   // Deserialize the user object based on a pre-serialized token
   // which is the user id
   passport.deserializeUser(function(id, done) {
+    console.log('passport.serializeUser id:', id);
     User.findOne({
       _id: id
     }, '-salt -hashed_password', function(err, user) {
@@ -33,9 +35,11 @@ module.exports = function(passport) {
       passwordField: 'password'
     },
     function(username, password, done) {
+      console.log('username password:',username, password);
       User.findOne({
         username: username
       }, function(err, user) {
+        console.log('passport User.findOne err:', err, user);
         if (err) {
           return done(err);
         }

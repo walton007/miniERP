@@ -6,21 +6,20 @@
     <div class="alert alert-danger animated fadeIn" ng-show="emailError">{{emailError}}</div>
     <form id="register_form" ng-submit="register()">
         <h2>注册账号</h2>
-
         <div class="input-wrapper">
-            <input required id="name" type="text" name="name" placeholder="用户名"
-                   ng-model="user.name">
+            <input required id="username" type="text" name="username" placeholder="用户名"
+                   ng-model="user.username">
 
             <div class="error_message">请输入正确的用户名 #</div>
-            <span class="pic user"></span>
+            <span class="pic username"></span>
         </div>
 
         <div class="input-wrapper">
-            <input required id="username" type="text" name="username" placeholder="昵称"
-                   ng-model="user.username">
+            <input required id="name" type="text" name="name" placeholder="昵称"
+                   ng-model="user.name">
 
-            <div class="error_message">请输入正确的昵称 #</div>
-            <span class="pic username"></span>
+            <div class="error_message"> 请输入正确的昵称#</div>
+            <span class="pic user"></span>
         </div>
 
         <div class="input-wrapper">
