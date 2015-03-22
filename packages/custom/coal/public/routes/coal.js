@@ -22,17 +22,17 @@ angular.module('mean.coal').config(function(stateHelperProvider) {
 			url: '/labrecords',
 			templateUrl: 'coal/views/labrecords.html',
 		}, {
-			name: 'labcreaterecord',
-			url: '/labcreaterecord',
-			templateUrl: 'coal/views/labcreaterecord.html',
-		},{
-			name: 'labcheck',
-			url: '/labcheck',
-			templateUrl: 'coal/views/labcheck.html',
+			name: 'labsHistory',
+			url: '/labsHistory',
+			templateUrl: 'coal/views/labrecordsHistory.html',
 		}, {
-			name: 'consumeplanlist',
-			url: '/consumeplanlist',
-			templateUrl: 'coal/views/consumeplanlist.html',
+			name: 'createGoodIssue',
+			url: '/createGoodIssue',
+			templateUrl: 'coal/views/createGoodIssue.html',
+		}, {
+			name: 'recordConsume',
+			url: '/recordConsume',
+			templateUrl: 'coal/views/recordConsume.html',
 		}, {
 			name: 'consumehistory',
 			url: '/consumecheck',

@@ -1,6 +1,6 @@
 <section data-ng-controller="MineralSettingController" data-ng-init="getInitData()">
-	<div data-ng-show="!!minerals && minerals.length" class="row h2 text-center"> 
-		<div>矿源列表</div>
+	<div data-ng-show="!!minerals && minerals.length"> 
+		<div class="row h2 text-center">矿源列表</div>
 		<div class="gridStyle" data-ng-grid="mineralGridOptions"></div>
 	</div>
     <h1 data-ng-hide="!minerals || minerals.length"> 还没有添加矿源？   <a href="/#!/articles/create">添加新的矿源</a></h1>

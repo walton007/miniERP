@@ -87,27 +87,6 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
       }]
     };
 
-    $scope.create = function(isValid) {
-      if (isValid) {
-        this.dt.setHours(this.dateTm.getHours());
-        this.dt.setMinutes(this.dateTm.getMinutes());
-        var obj = new GoodIssues({
-          issueDate: this.dt,
-          binid: this.binSelected._id,
-          weight: this.weight
-        });
-        obj.$save(function(newResource) {
-          $scope.goodIssues.push(newResource);
-          $scope.weight = '';
-        }, function(errObj) {
-          alertErrMsg(errObj.data.error);
-        });
-        $scope.submitted = false;
-      } else {
-        $scope.submitted = true;
-      }
-    };
-
     $scope.$on('ngGridEventEndCellEdit', function(event) {
         var gi = event.targetScope.row.entity;
         var actualWeight = parseFloat(gi.editActualWeight);
@@ -135,19 +114,5 @@ angular.module('mean.coal').controller('GoodIssueController', ['$scope', 'GoodIs
             });
         }
     });
-
-    // date control actions
-    $scope.open = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
-      $scope.opened = true;
-    };
-    $scope.format = GlobalSetting.dateFormat;
-    $scope.dateOptions = GlobalSetting.dateOptions;
-    $scope.minDate = GlobalSetting.minDate(); 
-    $scope.maxDate = GlobalSetting.maxDate();
-
-    $scope.dateTm = new Date();
   }
 ]);

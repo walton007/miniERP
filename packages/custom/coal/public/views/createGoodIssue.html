@@ -1,13 +1,4 @@
-<section data-ng-controller="GoodIssueController" data-ng-init="getInitData()">
-	<div data-ng-show="!!goodIssues && goodIssues.length"> 
-		<div>计划用煤列表</div>
-		<div class="gridStyle" data-ng-grid="gridOptions"></div>
-	</div>
-	<div data-ng-hide="!!goodIssues && goodIssues.length"> 
-		<div>没有计划用煤记录</div>
-	</div>
-  
-
+<section data-ng-controller="CreateGoodIssueController" data-ng-init="getInitData()">
     <div> 	新增计划用煤记录 </div>
     <form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="create(addForm.$valid)" novalidate>
 
