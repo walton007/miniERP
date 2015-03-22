@@ -1,15 +1,18 @@
-<section data-ng-controller="UserSettingController" data-ng-init="getInitData()">
-	<div data-ng-show="!!users && users.length > 0">
+<section data-ng-controller="UserSettingController" data-ng-init="getInitData()"> 
+	<div data-ng-show="!editMode && !!users && users.length > 0">
 		<div>用户列表</div>
 		<div class="gridStyle" data-ng-grid="gridOptions"></div>
 	</div>
 
-	<div> 新增用户 </div>
-	<form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="create(addForm.$valid)" novalidate>
+	<div data-ng-show="!editMode"> 新增用户 </div> 
+    <div data-ng-show="editMode" > 
+         <button class="btn btn-info" ng-click="back()"> 返回 </button>
+    </div>
+	<form name="addForm" class="form-horizontal col-md-6" role="form" data-ng-submit="editMode? update() : create(addForm.$valid)" novalidate>
 		<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.username.$invalid }">
 			<label  class="col-md-3 control-label"> 用户名称</label>
 			<div class="col-md-9">
-				<input name="username" type="text" class="form-control" data-ng-model="username" required>
+				<input name="username" ng-readonly="editMode" type="text" class="form-control" data-ng-model="username" required>
 				<div ng-show="submitted && addForm.username.$invalid" class="help-block">
 					<p ng-show="addForm.username.$error.required">请输入用户名称</p>
 				</div>
@@ -19,7 +22,7 @@
         <div class="form-group" ng-class="{ 'has-error' : submitted && addForm.name.$invalid }">
             <label  class="col-md-3 control-label"> 昵称 </label>
             <div class="col-md-9">
-                <input name="name" type="text" class="form-control" data-ng-model="name"  required>
+                <input name="name" ng-readonly="editMode" type="text" class="form-control" data-ng-model="name"  required>
                 <div ng-show="submitted && addForm.name.$invalid" class="help-block">
                     <p ng-show="addForm.name.$error.required">请输入昵称</p>
                 </div>
@@ -35,7 +38,15 @@
 			</div>
 		</div>
 
-        <div class="form-group" ng-class="{ 'has-error' : submitted && addForm.password.$invalid }">
+        <div data-ng-show="editMode" class="form-group" >
+            <label  class="col-md-3 control-label"> 设置新密码 </label>
+            <div class="col-md-9">
+                <input name="resetPassword" type="text" class="form-control" data-ng-model="resetPassword"  placeholder="留空则不修改原密码">
+
+            </div>
+        </div>
+
+        <div data-ng-hide="editMode" class="form-group" ng-class="{ 'has-error' : submitted && addForm.password.$invalid }">
             <label  class="col-md-3 control-label"> 密码 </label>
             <div class="col-md-9">
                 <input name="password" type="text" class="form-control" data-ng-model="password"  required>
@@ -43,10 +54,10 @@
             </div>
         </div>
 
-		<div class="form-group" ng-class="{ 'has-error' : submitted && addForm.passwordConfirm.$invalid }">
+		<div data-ng-hide="editMode" class="form-group" ng-class="{ 'has-error' : submitted && addForm.passwordConfirm.$invalid }">
             <label  class="col-md-3 control-label"> 再次输入密码 </label>
             <div class="col-md-9">
-                <input name="name" type="text" class="form-control" data-ng-model="confirmPassword"  required>
+                <input name="repassword" type="text" class="form-control" data-ng-model="confirmPassword"  required>
                 <div ng-show="submitted  " class="help-block">
                     <p ng-show="passwordNoEqualErr">两次密码输入不相同</p>
                 </div>
@@ -57,6 +68,8 @@
 			<div class="col-md-offset-3 col-md-9">
 				<button type="submit" class="btn btn-info">添加</button>
 			</div>
+            
 		</div>
-	</form>
+	</form> 
+    
 </section> 
