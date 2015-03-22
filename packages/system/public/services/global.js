@@ -60,37 +60,37 @@ angular.module('mean.system').factory('Global', [
     } 
 
     var roles = window.user.roles;
-    if (roles.indexOf('admin')) {
+    if (roles.indexOf('admin') >= 0) {
       return '/systemsetting/users';
     };
     //GoodReceipt
-    if (roles.indexOf('worker')) {
+    if (roles.indexOf('worker')>= 0) {
       return '/coalmanage/createGoodReceipt';
     };
-    if (roles.indexOf('workerAdmin')) {
+    if (roles.indexOf('workerAdmin') >= 0) {
       return '/coalmanage/comehistory';
     };
 
     //Chemical Checker
-    if (roles.indexOf('chemChecker')) {
+    if (roles.indexOf('chemChecker')>= 0) {
       return '/coalmanage/labrecords';
     };
-    if (roles.indexOf('chemAdmin')) {
+    if (roles.indexOf('chemAdmin')>= 0) {
       return '/coalmanage/labsHistory';
     };
 
     //GoodIssue
-    if (roles.indexOf('workerBAdmin')) {
+    if (roles.indexOf('workerBAdmin')>= 0) {
       return '/coalmanage/createGoodIssue';
     };
     
-    if (roles.indexOf('workerB')) {
+    if (roles.indexOf('workerB')>= 0) {
       return '/coalmanage/recordConsume';
     };
-    if (roles.indexOf('chemChecker')) {
+    if (roles.indexOf('chemChecker')>= 0) {
       return '/coalmanage/labrecords';
     };
-    return '/coalmanage/comehistory';
+    return '/';
   };
 })
 .filter('roleTranslate', ['roleService', function(roleService) {

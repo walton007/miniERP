@@ -37,6 +37,8 @@ exports.render = function(req, res) {
         return sortArray.indexOf(a.name) - sortArray.indexOf(b.name);
       });
     }
+
+    console.log('index render: req.user:', req.user);
   
   // Send some basic starting info to the view
   res.render('index', {
