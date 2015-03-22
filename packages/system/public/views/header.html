@@ -9,10 +9,10 @@
           <b class="caret"></b>
         </a>
         <ul class="dropdown-menu menu-top">
-          <li data-ng-repeat="oneLevelMenus in menu.submenus" class="dropdown-submenu">
-            <!-- <a ui-sref='{{submenu.link}}'>{{submenu.title}}</a> -->
-            <a href="#">{{oneLevelMenus.title}}</a>
-            <ul class="dropdown-menu">
+          <li data-ng-repeat="oneLevelMenus in menu.submenus" ng-class="{'dropdown-submenu': oneLevelMenus.submenus.length > 0}">
+            <a ng-if="oneLevelMenus.submenus.length == 0" ui-sref='{{oneLevelMenus.link}}'>{{oneLevelMenus.title}}</a> 
+            <a ng-if="oneLevelMenus.submenus.length > 0" href="#">{{oneLevelMenus.title}}</a>
+            <ul ng-if="oneLevelMenus.submenus.length > 0" class="dropdown-menu">
               <li data-ng-repeat="secondLevelSubmenu in oneLevelMenus.submenus">
                 <a ui-sref='{{secondLevelSubmenu.link}}'>{{secondLevelSubmenu.title}}</a>
               </li>

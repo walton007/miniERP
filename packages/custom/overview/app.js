@@ -22,13 +22,11 @@ Overview.register(function(app, auth, database) {
     link: 'overview',
     roles: ['admin', 'worker'],
     menu: 'main',
-    name: 'overview',
-    weight: 1,
-    isdefault : false,
+    name: 'overview'
   });
 
   Overview.menus.add({
-    title: '总览',
+    title: '查看存煤',
     link: 'overview.inventory',
     roles: ['admin', 'worker'],
     menu: 'main/overview',
@@ -37,23 +35,14 @@ Overview.register(function(app, auth, database) {
   });
 
   Overview.menus.add({
-    title: '查看存煤',
-    link: 'overview.inventory',
-    roles: ['admin', 'worker'],
-    menu: 'main/overview/one',
-    name: 'sub1',
-    isdefault : true,
-  });
-
-  Overview.menus.add({
     title: '报表统计',
     link: 'overview.statistic',
     roles: ['admin', 'worker'],
-    menu: 'main/overview/one',
-    name: 'sub2'
+    menu: 'main/overview',
+    name: 'two'
   });
   
-  Overview.aggregateAsset('css', 'overview.css');
+  // Overview.aggregateAsset('css', 'overview.css');
   Overview.aggregateAsset('css', 'minierp.css');
 
   /**
