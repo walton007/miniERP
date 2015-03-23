@@ -17,7 +17,7 @@ angular.module('mean.system').factory('Global', [
     return _this._data;
   }
 ])
-.service('roleService', function() {
+.service('roleService', ['$location', function() {
   var rolesArray = [{
       'name': "来煤操作员",
       role: 'worker'
@@ -92,7 +92,7 @@ angular.module('mean.system').factory('Global', [
     };
     return '/';
   };
-})
+}])
 .filter('roleTranslate', ['roleService', function(roleService) {
   var roleObject = roleService.roles(); 
   return function(roles) {

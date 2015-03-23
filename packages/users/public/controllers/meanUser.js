@@ -111,14 +111,17 @@ angular.module('mean.users')
           username: $scope.user.username,
           name: $scope.user.name
         })
-          .success(function() {
+          .success(function(resp) {
+            alert('resp', resp);
             // authentication OK
-            $scope.registerError = 0;
-            $rootScope.user = $scope.user;
-            Global.user = $rootScope.user;
-            Global.authenticated = !! $rootScope.user;
-            $rootScope.$emit('loggedin');
-            $location.url('/');
+            // $scope.registerError = 0;
+            // $rootScope.user = $scope.user;
+            // Global.user = $rootScope.user;
+            // Global.authenticated = !! $rootScope.user;
+            // // $rootScope.$emit('loggedin');
+            // $location.url('/');
+            window.location.hash = '';
+            window.location.reload();
           })
           .error(function(error) {
             // Error: authentication failed

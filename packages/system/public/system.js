@@ -13,22 +13,12 @@ angular.module('mean.system', ['ui.router', 'ui.router.stateHelper', 'mean-facto
      
       // $rootScope.curState = toState;
       $rootScope.curStateLink = toState.name;
-
-       // console.log('angular.module toState', toState);
-
-
-      // if($rootScope.state === '' ) {
-      //   $rootScope.state = 'firstPage';
-      // }
-
-      // if (toState.name) {
-      //   $rootScope.menuname = toState.name;
-      //   console.log('angular.module stateChangeStart toState.name:', toState.name);
-      // }
-
     });
 
     console.log('roleService: ', roleService);
-    $location.url(roleService.getDefaultUrl( ));
+
+    if ($location.$$path !== '/auth/register' && $location.$$path !== '/auth/login') {
+      $location.url(roleService.getDefaultUrl());
+    }
   }])
 ;
